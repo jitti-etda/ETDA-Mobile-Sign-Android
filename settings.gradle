@@ -1,0 +1,6 @@
+include ':core'
+include ':features:home'
+include ':commons:ui'
+include ':app'
+rootProject.name = "teda-mobile"
+

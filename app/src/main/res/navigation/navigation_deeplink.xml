@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_deeplink"
+    app:startDestination="@id/import_key_fragment">
+
+    <fragment
+        android:id="@+id/import_key_fragment"
+        android:name="th.or.etda.teda.mobile.ui.importkey.password.ImportKeyPasswordFragment"
+        android:label="ExtractCertificateFragment"
+        tools:layout="@layout/import_key_password_fragment"
+        app:defaultNavHost="true">
+
+        <argument
+            android:name="file"
+            android:defaultValue=""
+            app:argType="string"/>
+
+        <argument
+            android:name="isResult"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+
+        <argument
+            android:name="intent_data_extract_ca"
+            android:defaultValue=""
+            />
+
+        <action
+            android:id="@+id/action_to_first"
+            app:destination="@id/nav_import_deeplink"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_import_deeplink"
+            app:popUpToInclusive="true" />
+
+
+        <action
+            android:id="@+id/next_action_backup_password"
+            app:destination="@id/backup_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_import_deeplink"
+        android:name="th.or.etda.teda.mobile.ui.importkey.ImportKeyFragment"
+        android:label="@string/menu_import"
+        tools:layout="@layout/import_key_fragment" >
+
+
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/backup_key_password"
+        android:name="th.or.etda.teda.mobile.ui.backupkey.password.BackupKeyPasswordFragment"
+        tools:layout="@layout/backup_key_password_fragment" >
+
+        <argument
+            android:name="isRestore"
+            app:argType="boolean"
+            android:defaultValue="false"/>
+
+
+    </fragment>
+
+
+</navigation>

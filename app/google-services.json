@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "313193399960",
+    "project_id": "etda-306410",
+    "storage_bucket": "etda-306410.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313193399960:android:7cad21f0fdb053552932ed",
+        "android_client_info": {
+          "package_name": "th.or.etda.teda.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313193399960-3sshhcm2jrsqaqj1kauoci725j275mas.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2xlUR_h4tudTMe8YnHUUD1mAznAMw0yc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313193399960-3sshhcm2jrsqaqj1kauoci725j275mas.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

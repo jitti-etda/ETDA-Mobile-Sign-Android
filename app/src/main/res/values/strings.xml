@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">TEDA Sign</string>
+    <string name="title_features">features</string>
+    <string name="title_home">home</string>
+
+    <string name="menu_import">Import p12</string>
+    <string name="menu_restore">Restore Key</string>
+    <string name="menu_backup">Backup Key</string>
+    <string name="menu_sign">Signed Signature</string>
+
+    <string name="ui_import_first">เข้าใช้งานครั้งแรก</string>
+    <string name="ui_import_btn_import">Import Key</string>
+    <string name="ui_import_btn_restore">Restore Key</string>
+
+    <string name="close">Close</string>
+    <string name="open">Open</string>
+</resources>
