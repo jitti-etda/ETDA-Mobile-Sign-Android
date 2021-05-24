@@ -5,8 +5,9 @@ import android.net.Uri
 import android.os.StrictMode
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import android.util.Base64OutputStream
 import android.util.Log
-import th.or.etda.teda.mobile.common.AESHelper
+import th.or.etda.teda.mobile.common.CryptLib
 import th.or.etda.teda.mobile.common.SingleLiveEvent
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.ui.home.HomeViewModel
@@ -18,6 +19,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.security.KeyStore
 import java.security.PrivateKey
+import java.util.*
 import javax.crypto.KeyGenerator
 
 
@@ -202,6 +204,7 @@ class ImportHelper {
 
             val p12: KeyStore = KeyStore.getInstance("pkcs12")
             p12.load(keyFile, password.toCharArray())
+
             println("----------------------------")
 
 //                if (!p12.aliases().toList().isEmpty()) {
@@ -255,7 +258,12 @@ class ImportHelper {
                 )
 
                 val sss: ByteArray = Files.readAllBytes(Paths.get(file.toURI()))
-                var res = AESHelper.encryptAES(sss, password)
+                val s: String = Base64.getEncoder().encodeToString(sss)
+
+                val cryptLib = CryptLib()
+                var res = cryptLib.encryptPlainText(s, password)
+
+//                var res = AESHelper.encryptAES(sss, password)
                 writeToFile(res, fileStoreEncrypt)
 
 
@@ -286,6 +294,17 @@ class ImportHelper {
 
         }
 
+
+        fun convertImageFileToBase64(imageFile: File): String {
+            return ByteArrayOutputStream().use { outputStream ->
+                Base64OutputStream(outputStream, android.util.Base64.DEFAULT).use { base64FilterStream ->
+                    imageFile.inputStream().use { inputStream ->
+                        inputStream.copyTo(base64FilterStream)
+                    }
+                }
+                return@use outputStream.toString()
+            }
+        }
 
         private fun writeToFileByteArray(data: ByteArray, file: File) {
             val stream = FileOutputStream(file)
@@ -361,6 +380,25 @@ class ImportHelper {
             } finally {
                 input.close()
             }
+        }
+
+        fun writeTempFileTest(context: Context, data: ByteArray): File {
+            val folder = context.getExternalFilesDir(Constants.FolderBackup)
+            val fileStoreEncrypt = File(
+                folder,"temp_decrypt_export.p12"
+            )
+            try {
+                val stream = FileOutputStream(fileStoreEncrypt)
+                try {
+                    stream.write(data)
+                } finally {
+                    stream.close()
+                }
+                return fileStoreEncrypt
+            } finally {
+            }
+
+
         }
     }
 

@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -109,24 +110,59 @@ public class DriveServiceHelper {
 
         mDriveService = driveService;
     }
-
+    private static final String[] SCOPES = {DriveScopes.DRIVE_FILE,DriveScopes.DRIVE,DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE_METADATA};
     public static Drive getGoogleDriveService(Context context, GoogleSignInAccount account, String appName) {
         GoogleAccountCredential credential =
                 GoogleAccountCredential.usingOAuth2(
-                        context, Collections.singleton(DriveScopes.DRIVE_FILE));
+                        context, Arrays.asList(SCOPES));
         credential.setSelectedAccount(account.getAccount());
         com.google.api.services.drive.Drive googleDriveService =
                 new com.google.api.services.drive.Drive.Builder(
                         AndroidHttp.newCompatibleTransport(),
                         new GsonFactory(),
                         credential)
-                        .setApplicationName(appName)
+//                        .setApplicationName(appName)
                         .build();
         return googleDriveService;
     }
+//    public static Drive getGoogleDriveService(Context context, GoogleSignInAccount account, String appName) {
+//        GoogleAccountCredential credential =
+//                GoogleAccountCredential.usingOAuth2(
+//                        context, Collections.singleton(DriveScopes.DRIVE_FILE));
+//        credential.setSelectedAccount(account.getAccount());
+//        com.google.api.services.drive.Drive googleDriveService =
+//                new com.google.api.services.drive.Drive.Builder(
+//                        AndroidHttp.newCompatibleTransport(),
+//                        new GsonFactory(),
+//                        credential)
+////                        .setApplicationName(appName)
+//                        .build();
+//        return googleDriveService;
+//    }
+
+
+    public  List<File> getAllFilesGdrive() throws IOException {
+        List<File> result = new ArrayList<File>();
+        Drive.Files.List request = mDriveService.files().list();
+
+        do {
+            try {
+                FileList files = request.execute();
+
+                result.addAll(files.getFiles());
+                request.setPageToken(files.getNextPageToken());
+            } catch (IOException e) {
+                System.out.println("An error occurred: " + e);
+                request.setPageToken(null);
+            }
+        } while (request.getPageToken() != null &&
+                request.getPageToken().length() > 0);
+
+        return result;
 
 
 
+    }
 
     public Task<String> createFile(final String fileName) {
         return Tasks.call(mExecutor, new Callable<String>() {
@@ -417,8 +453,10 @@ public class DriveServiceHelper {
                 // Retrive the metadata as a File object.
                 FileList result = mDriveService.files().list()
                         .setQ("mimeType = '" + DriveFolder.MIME_TYPE + "' and name = '" + folderName + "' and trashed = false ")
+//                        .setQ("mimeType = '" + DriveFolder.MIME_TYPE + "' and name = '" + folderName + "'")
                         .setSpaces("drive")
                         .execute();
+
 
                 for (int i = 0; i < result.getFiles().size(); i++) {
 
@@ -633,7 +671,8 @@ public class DriveServiceHelper {
                             parent = folderId;
                         }
 
-                        FileList result = mDriveService.files().list().setQ("'" + parent + "' in parents").setFields("files(id, name,size,createdTime,modifiedTime,starred,mimeType,trashed)").setSpaces("drive").execute();
+//                        FileList result = mDriveService.files().list().setQ("'" + parent + "' in parents").setFields("files(id, name,size,createdTime,modifiedTime,starred,mimeType,trashed)").setSpaces("drive").execute();
+                        FileList result = mDriveService.files().list().setQ("'" + parent + "' in parents and trashed=false").setFields("files(id,name,mimeType,modifiedTime,createdTime,fileExtension,size),nextPageToken").execute();
 
 
                         for (int i = 0; i < result.getFiles().size(); i++) {
@@ -641,7 +680,7 @@ public class DriveServiceHelper {
 //                            Log.i("file", maps.toString());
 //                            File a = result.getFiles().get(i);
 //                            Log.i("file", a.toString());
-                            if (result.getFiles().get(i).getTrashed() != null && !result.getFiles().get(i).getTrashed()) {
+//                            if (result.getFiles().get(i).getTrashed() != null && !result.getFiles().get(i).getTrashed()) {
                                 GoogleDriveFileHolder googleDriveFileHolder = new GoogleDriveFileHolder();
                                 googleDriveFileHolder.setId(result.getFiles().get(i).getId());
                                 googleDriveFileHolder.setName(result.getFiles().get(i).getName());
@@ -666,7 +705,7 @@ public class DriveServiceHelper {
                                 }
 
                                 googleDriveFileHolderList.add(googleDriveFileHolder);
-                            }
+//                            }
                         }
 
 

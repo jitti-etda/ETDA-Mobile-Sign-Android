@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.biometric:biometric-ktx:1.2.0-alpha03@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63c07aaae4511b83e33df8ae3abf42a5/jetified-biometric-ktx-1.2.0-alpha03/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63c07aaae4511b83e33df8ae3abf42a5/jetified-biometric-ktx-1.2.0-alpha03/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63c07aaae4511b83e33df8ae3abf42a5/jetified-biometric-ktx-1.2.0-alpha03/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c1d0bafd90b07e8f7471ffd1747416f6/jetified-biometric-ktx-1.2.0-alpha03/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c1d0bafd90b07e8f7471ffd1747416f6/jetified-biometric-ktx-1.2.0-alpha03/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c1d0bafd90b07e8f7471ffd1747416f6/jetified-biometric-ktx-1.2.0-alpha03/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

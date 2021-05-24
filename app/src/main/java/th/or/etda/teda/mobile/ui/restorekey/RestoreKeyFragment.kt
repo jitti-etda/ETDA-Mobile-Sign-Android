@@ -154,10 +154,14 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
         }
     }
 
+
     private fun signIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+            .requestScopes(Scope(DriveScopes.DRIVE))
+            .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
+            .requestScopes(Scope(DriveScopes.DRIVE_METADATA))
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireCompatActivity(), gso)
 //        mGoogleSignInClient = buildGoogleSignInClient();
@@ -210,6 +214,21 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
         viewBinding.progressBar.visibility = View.VISIBLE
         mDriveServiceHelper?.let {
             viewModel.getFileBackup(requireContext(), it)
+
+//            val CrearEventoHilo: Thread = object : Thread() {
+//                override fun run() {
+//                    val fileMetadata = File()
+//                    fileMetadata.setName("photo.jpg")
+//                    val filePath = File("files/photo.jpg")
+//                    val mediaContent = FileContent("image/jpeg", filePath)
+//                    val file: File = driveService.files().create(fileMetadata, mediaContent)
+//                        .setFields("id")
+//                        .execute()
+//                    System.out.println("File ID: " + file.getId())
+//                }
+//            }
+//            CrearEventoHilo.start()
+
         }
         viewModel.folderGoogleDriveLive.observe(viewLifecycleOwner, Observer {
             viewBinding.progressBar.visibility = View.GONE

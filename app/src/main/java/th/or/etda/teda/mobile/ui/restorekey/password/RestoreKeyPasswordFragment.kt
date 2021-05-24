@@ -4,9 +4,11 @@ import androidx.navigation.fragment.findNavController
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.databinding.RestoreKeyPasswordFragmentBinding
+import th.or.etda.teda.mobile.ui.importkey.ImportHelper
 import th.or.etda.teda.mobile.ui.restorekey.RestoreKeyFragment
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
+import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 
@@ -39,6 +41,7 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
                     if (file != null) {
                         val fileInputStream = FileInputStream(file)
                         decrypt(fileInputStream, password)
+
                     }
 
                 }
@@ -53,6 +56,7 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
         dataDecrypt = viewModel.decrypt(
             file, password
         )
+
         if (dataDecrypt == null) {
 //            Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT)
 //                .show()
@@ -64,6 +68,8 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
 
         }
     }
+
+
 
     override fun onInitDependencyInjection() {
 

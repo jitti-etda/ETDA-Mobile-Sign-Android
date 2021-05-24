@@ -1,6 +1,7 @@
 package th.or.etda.teda.mobile.ui.restorekey
 
 import android.content.Context
+import android.util.Log
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,12 +35,14 @@ class RestoreKeyViewModel(val repository: CertificateRepository) : ViewModel() {
         viewModelScope.launch {
 
             mDriveServiceHelper.searchFolder(context.getString(R.string.app_name))
+//            mDriveServiceHelper.searchFolder("")
                 ?.addOnCompleteListener { foldersResult ->
                     var folders = foldersResult.result
                     if (folders.isNotEmpty()) {
                         for (i in 0 until folders.size) {
                             var folder = folders[i]
                             mDriveServiceHelper.queryFilesWithoutDelete(folder.id)
+//                            mDriveServiceHelper.searchFile("Copy",".txt")
                                 ?.addOnCompleteListener {
                                     showLoading.set(false)
                                     fileGoogleDriveLive.value = it.result
@@ -51,13 +54,27 @@ class RestoreKeyViewModel(val repository: CertificateRepository) : ViewModel() {
                         showLoading.set(false)
                     }
                 }
+
+
         }
+
+
+
 //        viewModelScope.launch {
 //            mDriveServiceHelper.queryFilesWithoutDelete(folders[0]?.id)?.addOnCompleteListener {
 //                showLoading.set(false)
 //                fileGoogleDriveLive.value = it.result
 //            }
 //        }
+    }
+
+    fun getTest(mDriveServiceHelper: DriveServiceHelper){
+        viewModelScope.launch {
+            var list = mDriveServiceHelper.getAllFilesGdrive()
+            for(i in 0 until list.size){
+                Log.i("name",list[i].name)
+            }
+        }
     }
 
 //    var downloadSuccess = MutableLiveData<InputStream>()
@@ -130,17 +147,17 @@ class RestoreKeyViewModel(val repository: CertificateRepository) : ViewModel() {
 //    }
 
     //    var dataDecrypt = MutableLiveData<ByteArray>()
-    fun decrypt(inputStream: InputStream, password: String): ByteArray? {
-        var data = ImportHelper.convertStreamToString(inputStream)
-
-//        viewModelScope.launch {
+//    fun decrypt(inputStream: InputStream, password: String): ByteArray? {
+//        var data = ImportHelper.convertStreamToString(inputStream)
 //
-//
-//            dataDecrypt.value = data?.let { RSACrypt2.decryptAES(it, password) };
-//
-//        }
-        return data?.let { AESHelper.decryptAES(it, password) }
-    }
+////        viewModelScope.launch {
+////
+////
+////            dataDecrypt.value = data?.let { RSACrypt2.decryptAES(it, password) };
+////
+////        }
+//        return data?.let { AESHelper.decryptAES(it, password) }
+//    }
 
     fun addCertificate(certificate: Certificate) {
         viewModelScope.launch {

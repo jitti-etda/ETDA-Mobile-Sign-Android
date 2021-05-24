@@ -1,9 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.firebase:firebase-analytics-ktx:18.0.2@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6ccdc5fa1086e0aeaf1d6f09263d32a1/jetified-firebase-analytics-ktx-18.0.2/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6ccdc5fa1086e0aeaf1d6f09263d32a1/jetified-firebase-analytics-ktx-18.0.2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6ccdc5fa1086e0aeaf1d6f09263d32a1/jetified-firebase-analytics-ktx-18.0.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e29762d88be759b9e6fac371a7640ec/jetified-firebase-analytics-ktx-18.0.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e29762d88be759b9e6fac371a7640ec/jetified-firebase-analytics-ktx-18.0.2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e29762d88be759b9e6fac371a7640ec/jetified-firebase-analytics-ktx-18.0.2/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-analytics-ktx/18.0.2/27037f967d955876b3e29db6de6a24458c5b6080/firebase-analytics-ktx-18.0.2-javadoc.jar!/" />

@@ -2,6 +2,7 @@ package th.or.etda.teda.mobile
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Base64
 import android.view.Menu
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -12,11 +13,16 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.common.io.BaseEncoding.base64
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
+import th.or.etda.teda.mobile.common.CryptLib
 import th.or.etda.teda.mobile.databinding.ActivityMainBinding
+import th.or.etda.teda.mobile.ui.importkey.ImportHelper
 import th.or.etda.teda.mobile.ui.importkey.ImportKeyViewModel
+import th.or.etda.teda.mobile.util.Constants
 import th.or.etda.teda.ui.base.BaseActivity
+import java.io.File
 
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -64,7 +70,24 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+//        val folder = getExternalFilesDir(Constants.FolderBackup)
+//        val file = File(
+//            folder,"temp_decrypt.p12"
+//        )
+//
+//
+//        val value: String = Base64.encodeToString( file.readBytes(), Base64.DEFAULT)
+//        val cryptLib = CryptLib()
+//
+//        var text = cryptLib.encryptPlainText(value, "aaaa")
+//        var aaa = cryptLib.decryptCipherText(text, "aaaa")
+//        val data: ByteArray = Base64.decode(aaa, Base64.DEFAULT)
+//        ImportHelper.writeTempFileTest(this,data)
 
+
+//        e7AZI21jweSgtBQgXhQN83f/3UwadWfYxy+Sx6L6dP8=
+
+//        Log.i("asdasd",text)
     }
 
     override fun getLayoutId(): Int {
