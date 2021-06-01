@@ -12,6 +12,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.util.AttributeSet
 import android.util.DisplayMetrics
@@ -25,7 +26,6 @@ import androidx.biometric.BiometricPrompt
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
@@ -176,11 +176,17 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         setFragmentResultListener(CertListFragment.REQUEST_KEY) { key, bundle ->
             // read from the bundle
             certName = bundle.getParcelable<Certificate>("cert")
-            mScannerView?.setResultHandler(this@SignFragment)
-            mScannerView?.startCamera()
+//            mScannerView?.setResultHandler(this@SignFragment)
+//            mScannerView?.startCamera()
+//            resumeScanner()
 
 //            certName?.let { postSigned(qrcodeResult, it) }
-            certName?.let { checkBioAuth(it?.certName) }
+            certName?.let {
+//                checkBioAuth(it?.certName)
+                if (BiometricEncryptedSharedPreferences.checkBio(requireCompatActivity())) {
+                    setUpAuth(it.certName)
+                }
+            }
         }
 
 
@@ -204,14 +210,28 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
                 Log.e("MY_APP_TAG", "Biometric features are currently unavailable.")
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
                 // Prompts the user to create credentials that your app accepts.
-                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                    putExtra(
-                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
-                    )
-                }
-                startActivityForResult(enrollIntent, REQUEST_CODE)
+//                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+//                    putExtra(
+//                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+//                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+//                    )
+//                }
+//                startActivityForResult(enrollIntent, REQUEST_CODE)
                 Log.e("MY_APP_TAG", "BIOMETRIC_ERROR_NONE_ENROLLED")
+                // Prompts the user to create credentials that your app accepts.
+//                var enrollIntent: Intent? = null
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                    enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL)
+//                    enrollIntent.putExtra(
+//                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+//                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+//                    )
+//                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                    enrollIntent = Intent(Settings.ACTION_FINGERPRINT_ENROLL)
+//                } else {
+//                    enrollIntent = Intent(Settings.ACTION_SECURITY_SETTINGS)
+//                }
+//                startActivityForResult(enrollIntent, REQUEST_CODE)
             }
             BiometricManager.BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED -> {
                 Log.e("MY_APP_TAG", "BIOMETRIC_ERROR_SECURITY_UPDATE_REQUIRED")
@@ -227,8 +247,9 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 
     private fun setUpAuth(name: String) {
 
-        mScannerView?.setResultHandler(this@SignFragment)
-        mScannerView?.startCamera()
+//        mScannerView?.setResultHandler(this@SignFragment)
+//        mScannerView?.startCamera()
+//        resumeScanner()
 
         certName?.let {
             postSigned(qrcodeResult, it)
@@ -301,7 +322,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse) { /* ... */
-                        mScannerView?.startCamera()
+                        resumeScanner()
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse) { /* ... */
@@ -342,18 +363,24 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     }
 
 
-    override fun onResume() {
-        super.onResume()
+//    override fun onResume() {
+//        super.onResume()
 //        resumeScanner()
+//
+//
+//    }
+
+
+    fun resumeScanner() {
         mScannerView?.setResultHandler(this)
         mScannerView?.startCamera()
-
+        viewBinding.progressBar.visibility = View.GONE
     }
 
-//    fun resumeScanner() {
-//        mScannerView?.setResultHandler(this)
-//        mScannerView?.startCamera()
-//    }
+    fun stopScanner() {
+        mScannerView?.stopCamera()
+
+    }
 
     private class CustomViewFinderView : ViewFinderView {
         val PAINT = Paint()
@@ -463,7 +490,8 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 
     override fun handleResult(rawResult: Result?) {
         println("rawResult => ${rawResult?.text}")
-        mScannerView?.stopCamera()
+//        mScannerView?.stopCamera()
+        stopScanner()
         val result = rawResult?.text
         result?.let {
             qrcodeResult = result.trim()
@@ -480,22 +508,23 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
                 AlertDialog.Builder(requireContext())
                     .setTitle("ข้อมูลเอกสารที่ลงนาม")
                     .setMessage(message)
+                    .setCancelable(false)
                     .setPositiveButton(
                         "Confirm"
                     ) { dialog, which ->
                         dialog.dismiss()
                         waitForSelectCert()
                     }.setNegativeButton("Cancel") { dialog, whict ->
-                        onResume()
+                        resumeScanner()
                     }.show()
             } catch (e: Exception) {
                 AlertDialog.Builder(requireContext())
                     .setMessage("QrCode Invalid")
+                    .setCancelable(false)
                     .setPositiveButton(
                         "Close"
                     ) { dialog, which ->
-                        mScannerView?.setResultHandler(this)
-                        mScannerView?.startCamera()
+                        resumeScanner()
                     }.show()
             }
 //            postSigned(result)
@@ -505,7 +534,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     }
 
     private fun waitForSelectCert() {
-
+        stopScanner()
         val action = SignFragmentDirections.nextCertList(true)
         findNavController().navigate(action)
 
@@ -551,16 +580,17 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
             signedInfo?.let {
                 it.document?.signedinfo?.signedInfo?.let { it1 ->
                     var message =
-                        "business_type : " + it.document?.documentInfo?.businessType + "\n" +
-                                "document_description : " + it.document?.documentInfo?.documentDescription + "\n" +
+//                        "business_type : " + it.document?.documentInfo?.businessType + "\n" +
+//                                "document_description : " + it.document?.documentInfo?.documentDescription + "\n" +
                                 "document_name : " + it.document?.documentInfo?.documentName + "\n" +
-                                "document_type : " + it.document?.documentInfo?.documentType + "\n" +
+//                                "document_type : " + it.document?.documentInfo?.documentType + "\n" +
                                 "ref_number : " + it.document?.documentInfo?.refNumber
 
 
                     val dialog = AlertDialog.Builder(activity as Context)
                     dialog.setTitle("Sign info")
                     dialog.setMessage(message)
+                    dialog.setCancelable(false)
                     dialog.setPositiveButton("Confirm") { text, listener ->
                         var isCache = false
                         for (i in Constants.listDataCache.indices) {
@@ -633,6 +663,13 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 
                     }
 
+                    Handler().postDelayed(
+                        {
+                            stopScanner()
+                        },
+                        300 // value in milliseconds
+                    )
+
                     dialog.create()
                     dialog.show()
 
@@ -680,18 +717,6 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 //                    }
 //                })
         }
-    }
-
-
-    private fun alertBox(message: String) {
-        AlertDialog.Builder(requireContext())
-            .setMessage(message)
-            .setPositiveButton(
-                "Close"
-            ) { dialog, which ->
-                // continue with delete
-//                onResume()
-            }.show()
     }
 
 

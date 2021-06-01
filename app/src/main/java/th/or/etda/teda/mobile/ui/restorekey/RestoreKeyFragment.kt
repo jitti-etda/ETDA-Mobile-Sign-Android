@@ -46,6 +46,7 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
 
         authenGoogleDrive()
 
+
         viewBinding.apply {
 
             viewBinding.recyclerView.adapter = adapterRestore

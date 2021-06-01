@@ -190,25 +190,35 @@ class HomeViewModel(val homeRepository: SigningRepository) : ViewModel() {
 //                    }
 //                })
         showLoading.set(true)
-        viewModelScope.launch {
-            val result = homeRepository.signingSign(
-                url,
-                data[SigningSingUtil.TOKEN.ordinal], certCa, certChains
-            )
-            showLoading.set(false)
-            when (result) {
-                is AppResult.Success -> {
-//                    signedInfo.value = result.successData
-                    val gson = Gson()
-                    val type = object : TypeToken<SignedInfo>() {}.type
-                    signedInfo.value = gson.fromJson(result.successData, type)
-                    showError.value = null
-                }
-                is AppResult.Error -> {
-                    showError.value = result.exception.message
-                }
-            }
-        }
+//        viewModelScope.launch {
+//            val result = homeRepository.signingSign(
+//                url,
+//                data[SigningSingUtil.TOKEN.ordinal], certCa, certChains, object : SigningRepository.OnData {
+//                    override fun onSuccess(data: SignedInfo) {
+//                        showLoading.set(false)
+//                        signedInfo.value = data
+//                    }
+//
+//                    override fun onFailure(data: DataResponse) {
+//                        showLoading.set(false)
+//                        signedInfoError.value = data
+//                    }
+//                }
+//            )
+//            showLoading.set(false)
+//            when (result) {
+//                is AppResult.Success -> {
+////                    signedInfo.value = result.successData
+//                    val gson = Gson()
+//                    val type = object : TypeToken<SignedInfo>() {}.type
+//                    signedInfo.value = gson.fromJson(result.successData, type)
+//                    showError.value = null
+//                }
+//                is AppResult.Error -> {
+//                    showError.value = result.exception.message
+//                }
+//            }
+//        }
     }
 
 

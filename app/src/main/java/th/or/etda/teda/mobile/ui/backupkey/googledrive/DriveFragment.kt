@@ -76,7 +76,12 @@ class DriveFragment : BaseFragment<DriveFragmentBinding>(
     private fun signIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
+            .requestScopes(
+                Scope(DriveScopes.DRIVE_FILE),
+                Scope(DriveScopes.DRIVE),
+                Scope(DriveScopes.DRIVE_APPDATA),
+                Scope(DriveScopes.DRIVE_METADATA)
+            )
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireCompatActivity(), gso)
 //        mGoogleSignInClient = buildGoogleSignInClient();

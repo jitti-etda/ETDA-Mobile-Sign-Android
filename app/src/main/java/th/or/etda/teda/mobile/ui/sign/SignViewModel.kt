@@ -9,12 +9,16 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.launch
 import okhttp3.internal.and
+import th.or.etda.teda.mobile.common.AppResult
 import th.or.etda.teda.mobile.common.SingleLiveEvent
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.model.SignedInfo
+import th.or.etda.teda.mobile.repository.DataResponse
 import th.or.etda.teda.mobile.repository.SigningRepository
 import th.or.etda.teda.mobile.util.SigningSingUtil
 import java.security.*
@@ -50,8 +54,8 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
     val signedInfo = SingleLiveEvent<SignedInfo>()
     val signedInfoSubmit = SingleLiveEvent<SignedInfo>()
 
-//    val signedInfoError = MutableLiveData<DataResponse>()
-//    val signedInfoSubmitError = MutableLiveData<DataResponse>()
+    val signedInfoError = SingleLiveEvent<DataResponse>()
+    val signedInfoSubmitError = SingleLiveEvent<DataResponse>()
 
 
     fun signWithKeyStore(signInfo: String, cert: Certificate): String {
@@ -211,7 +215,7 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
     val showLoading = ObservableBoolean()
     var showError = SingleLiveEvent<String>()
 
-    fun signingSignInfo(urls: String, certCa: String, certChains: String) {
+     fun signingSignInfo(urls: String, certCa: String, certChains: String) {
         showLoading.set(true)
 //        val mockData = SignedInfo(
 //            description = SignedInfo.SignedDescription(
@@ -239,9 +243,9 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
                     "ref_number:${data[SigningSingUtil.REF_NUMBER.ordinal]}"
         )
 
-        showLoading.set(true)
+//        showLoading.set(true)
         var urlTest =
-            "https://mconnecttest-signing.teda.th/api/v1/signing_sign/" + data[SigningSingUtil.REQUEST_ID.ordinal]
+            "https://api-uat.teda.th/signingserver/api/v2/signing_sign/{request_id}/" + data[SigningSingUtil.REQUEST_ID.ordinal]
         var url = data[SigningSingUtil.URL.ordinal] + "/" + data[SigningSingUtil.REQUEST_ID.ordinal]
 //            homeRepository.signingSign(url,
 //                data[SigningSingUtil.TOKEN.ordinal], certCa, certChains,
@@ -257,34 +261,33 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 //                    }
 //                })
         showLoading.set(true)
-
         //Mock success
-        val gson = Gson()
-        val type = object : TypeToken<SignedInfo>() {}.type
-        signedInfo.value = gson.fromJson(mockSignSuccess, type)
-        showError.value = null
+//        val gson = Gson()
+//        val type = object : TypeToken<SignedInfo>() {}.type
+//        signedInfo.value = gson.fromJson(mockSignSuccess, type)
+//        showError.value = ""
 
 
-//        viewModelScope.launch {
-//            val result = homeRepository.signingSign(
-//                url,
-//                data[SigningSingUtil.TOKEN.ordinal], certCa, certChains
-//            )
-//            showLoading.set(false)
-//
-//            when (result) {
-//                is AppResult.Success -> {
-////                    signedInfo.value = result.successData
-//                    val gson = Gson()
-//                    val type = object : TypeToken<SignedInfo>() {}.type
-//                    signedInfo.value = gson.fromJson(result.successData, type)
-//                    showError.value = null
-//                }
-//                is AppResult.Error -> {
-//                    showError.value = result.exception.message
-//                }
-//            }
-//        }
+        viewModelScope.launch {
+            val result = homeRepository.signingSign(
+                url,
+                data[SigningSingUtil.TOKEN.ordinal], certCa, certChains
+            )
+            showLoading.set(false)
+
+            when (result) {
+                is AppResult.Success -> {
+//                    signedInfo.value = result.successData
+                    val gson = Gson()
+                    val type = object : TypeToken<SignedInfo>() {}.type
+                    signedInfo.value = gson.fromJson(result.successData, type)
+                    showError.value = ""
+                }
+                is AppResult.Error -> {
+                    showError.value = result.exception.message
+                }
+            }
+        }
     }
 
     var mockSignSubmitSuccess = "{\n" +
@@ -363,30 +366,29 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 //        }
 
         showLoading.set(true)
+//        val gson = Gson()
+//        val type = object : TypeToken<SignedInfo>() {}.type
+//        signedInfoSubmit.value = gson.fromJson(mockSignSubmitSuccess, type)
+//        showError.value = ""
 
-        val gson = Gson()
-        val type = object : TypeToken<SignedInfo>() {}.type
-        signedInfoSubmit.value = gson.fromJson(mockSignSubmitSuccess, type)
-        showError.value = null
-
-//        viewModelScope.launch {
-//            val result = homeRepository.signingSignSubmit(
-//                url,
-//                data[SigningSingUtil.TOKEN.ordinal], signature
-//            )
-//            showLoading.set(false)
-//            when (result) {
-//                is AppResult.Success -> {
-//                    val gson = Gson()
-//                    val type = object : TypeToken<SignedInfo>() {}.type
-//                    signedInfo.value = gson.fromJson(result.successData, type)
-//                    showError.value = null
-//                }
-//                is AppResult.Error -> {
-//                    showError.value = result.exception.message
-//                }
-//            }
-//        }
+        viewModelScope.launch {
+            val result = homeRepository.signingSignSubmit(
+                url,
+                data[SigningSingUtil.TOKEN.ordinal], signature
+            )
+            showLoading.set(false)
+            when (result) {
+                is AppResult.Success -> {
+                    val gson = Gson()
+                    val type = object : TypeToken<SignedInfo>() {}.type
+                    signedInfo.value = gson.fromJson(result.successData, type)
+                    showError.value = ""
+                }
+                is AppResult.Error -> {
+                    showError.value = result.exception.message
+                }
+            }
+        }
     }
 
 

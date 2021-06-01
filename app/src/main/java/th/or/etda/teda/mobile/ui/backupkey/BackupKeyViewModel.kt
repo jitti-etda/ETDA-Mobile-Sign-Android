@@ -33,7 +33,7 @@ class BackupKeyViewModel (var repository: CertificateRepository): ViewModel() {
             if(res.isEmpty()){
                 showError.value  = "Not found"
             }else{
-                showError.value  = null
+                showError.value  = ""
             }
 
         }

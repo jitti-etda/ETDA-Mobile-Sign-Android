@@ -1,13 +1,17 @@
 package th.or.etda.teda.mobile.common;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.provider.Settings;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.biometric.BiometricManager;
@@ -18,10 +22,16 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
 import androidx.security.crypto.MasterKeys;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+
+import th.or.etda.teda.mobile.MainActivity;
+import th.or.etda.teda.mobile.util.UtilApps;
 
 import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
 import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
@@ -29,6 +39,7 @@ import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTI
 public class BiometricEncryptedSharedPreferences {
     private static final int KEY_SIZE = 256;
     private static final String MASTER_KEY_ALIAS = "_androidx_security_master_key_biometric";
+//    private static final String MASTER_KEY_ALIAS = "_teda_master_key_biometric";
 
     /**
      * @param fragment   A reference to the client's fragment
@@ -68,7 +79,24 @@ public class BiometricEncryptedSharedPreferences {
                     .setKeySize(KEY_SIZE)
                     .setUserAuthenticationRequired(true);
             b.setUserAuthenticationValidityDurationSeconds(timeout);
+
+//            KeyPairGenerator kpg = KeyPairGenerator.getInstance(
+//                    KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore");
+//
+//            kpg.initialize(new KeyGenParameterSpec.Builder(
+//                    alias,
+//                    KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
+//                    .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+//                    .setKeySize(KEY_SIZE)
+//                    .build());
+//
+//            KeyPair keyPair = kpg.generateKeyPair();
+
+//            MasterKey masterKey = new MasterKey.Builder(c)
+//                    .setKeyGenParameterSpec(b.build())
+//                    .build();
             return EncryptedSharedPreferences.create(fileName, MasterKeys.getOrCreate(b.build()), c, EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV, EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+//            return EncryptedSharedPreferences.create(c,fileName, masterKey,EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
         } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
             return null;
@@ -110,9 +138,16 @@ public class BiometricEncryptedSharedPreferences {
     }
 
 
-    public static boolean checkBio(Activity context){
+    public static boolean checkBio(Activity context) {
         BiometricManager biometricManager = BiometricManager.from(context);
-        switch (biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL)) {
+
+        int bio = 0;
+       try{
+            bio = biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
+        }catch (Exception e){
+            bio = biometricManager.canAuthenticate();
+        }
+        switch (bio) {
             case BiometricManager.BIOMETRIC_SUCCESS:
                 Log.d("MY_APP_TAG", "App can authenticate using biometrics.");
                 return true;
@@ -122,13 +157,36 @@ public class BiometricEncryptedSharedPreferences {
             case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
                 Log.e("MY_APP_TAG", "Biometric features are currently unavailable.");
                 return false;
+            case BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED:
+                Toast.makeText(context,"Device not support Biometric",Toast.LENGTH_SHORT).show();
+                return false;
             case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
                 Log.e("MY_APP_TAG", "BIOMETRIC_ERROR_NONE_ENROLLED.");
                 // Prompts the user to create credentials that your app accepts.
-                final Intent enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
-                enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
-                context.startActivityForResult(enrollIntent, 1234);
+                new AlertDialog.Builder(context)
+                        .setMessage("Please enable Biometric")
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        // continue with delete
+
+                                        Intent enrollIntent = null;
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                            enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
+                                            enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                                                    BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
+                                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+
+                                            enrollIntent = new Intent(Settings.ACTION_FINGERPRINT_ENROLL);
+
+                                        } else {
+                                            enrollIntent = new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS);
+                                        }
+                                        context.startActivityForResult(enrollIntent, 1234);
+                                    }
+                                }).show();
+
                 return false;
         }
         return false;

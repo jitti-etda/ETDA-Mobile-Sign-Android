@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.common.io.BaseEncoding.base64
+import io.sentry.Sentry
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.common.CryptLib
@@ -88,6 +89,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 //        e7AZI21jweSgtBQgXhQN83f/3UwadWfYxy+Sx6L6dP8=
 
 //        Log.i("asdasd",text)
+//        Sentry.captureMessage("testing SDK setup")
     }
 
     override fun getLayoutId(): Int {
@@ -121,9 +123,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        checkMenu()
+//        checkMenu()
 
-
+//        throw RuntimeException("Test Crash")
     }
 
 
@@ -133,7 +135,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             menuView.getItem(0).isEnabled = false
             menuView.getItem(1).isEnabled = false
             menuView.getItem(2).isEnabled = false
-            alertFingerDialog()
+//            alertFingerDialog()
         }else{
             getCertAll(navView)
         }

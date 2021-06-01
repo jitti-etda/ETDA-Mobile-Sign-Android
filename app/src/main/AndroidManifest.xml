@@ -33,6 +33,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://9228461c0c3f4283a8878e4507bf0290@o738973.ingest.sentry.io/5785534" />
 
 
         <activity android:name=".extract.DeepLinkActivity">
