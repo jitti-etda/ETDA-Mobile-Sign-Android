@@ -1,6 +1,7 @@
 package th.or.etda.teda.mobile.repository
 
 import android.content.Context
+import android.util.Log
 import org.json.JSONObject
 import th.or.etda.teda.mobile.api.SigningApi
 import th.or.etda.teda.mobile.common.AppResult
@@ -40,6 +41,7 @@ class SigningRepository(val signingApi: SigningApi, val context: Context) {
         json.put("chains", certChains)
         var jsonKey = JSONObject()
         jsonKey.put("key", json)
+        Log.i("p12",jsonKey.toString())
         if (isOnline(context)) {
             return try {
                 val response = signingApi.signingSignQrcode(url, token, jsonKey.toString())

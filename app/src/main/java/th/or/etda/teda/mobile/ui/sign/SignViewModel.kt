@@ -381,7 +381,7 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
                 is AppResult.Success -> {
                     val gson = Gson()
                     val type = object : TypeToken<SignedInfo>() {}.type
-                    signedInfo.value = gson.fromJson(result.successData, type)
+                    signedInfoSubmit.value = gson.fromJson(result.successData, type)
                     showError.value = ""
                 }
                 is AppResult.Error -> {

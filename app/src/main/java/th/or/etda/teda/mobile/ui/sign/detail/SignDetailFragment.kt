@@ -34,7 +34,7 @@ class SignDetailFragment : BaseFragment<SignDetailFragmentBinding>(
 
         viewBinding.apply {
 
-            tvName.setText(signInfo?.document?.documentInfo?.documentName)
+            tvName.setText(signInfo?.description)
             tvDate.setText(UtilApps.currentDate())
 
             btnAccept.setOnClickListener {

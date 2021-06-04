@@ -15,6 +15,7 @@ import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.SingleLiveEvent
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.data.CertificateRepository
+import th.or.etda.teda.mobile.model.ExtrackP12
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.DriveServiceHelper
 import th.or.etda.teda.mobile.ui.importkey.ImportHelper
 import th.or.etda.teda.mobile.util.UtilApps
@@ -101,7 +102,7 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
 
     }
 
-    var extractP12Success = SingleLiveEvent<PrivateKey>()
+    var extractP12Success = SingleLiveEvent<ExtrackP12>()
     fun extractP12(
         context: Context,
         password: String

@@ -500,9 +500,9 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
                 var data = qrcodeResult.split(";")
 
                 var message =
-                    "url : " + data[SigningSingUtil.URL.ordinal] + "\n" +
-                            "request_id : " + data[SigningSingUtil.REQUEST_ID.ordinal] + "\n" +
-                            "token : " + data[SigningSingUtil.TOKEN.ordinal] + "\n" +
+//                    "url : " + data[SigningSingUtil.URL.ordinal] + "\n" +
+//                            "request_id : " + data[SigningSingUtil.REQUEST_ID.ordinal] + "\n" +
+//                            "token : " + data[SigningSingUtil.TOKEN.ordinal] + "\n" +
                             "ref_number : " + data[SigningSingUtil.REF_NUMBER.ordinal]
 
                 AlertDialog.Builder(requireContext())
@@ -578,13 +578,13 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 //            })
         viewModel.signedInfo.observe(viewLifecycleOwner, { signedInfo ->
             signedInfo?.let {
-                it.document?.signedinfo?.signedInfo?.let { it1 ->
+                it.signedInfo?.let { it1 ->
                     var message =
 //                        "business_type : " + it.document?.documentInfo?.businessType + "\n" +
 //                                "document_description : " + it.document?.documentInfo?.documentDescription + "\n" +
-                                "document_name : " + it.document?.documentInfo?.documentName + "\n" +
+//                                "document_name : " + it.document?.documentInfo?.documentName + "\n" +
 //                                "document_type : " + it.document?.documentInfo?.documentType + "\n" +
-                                "ref_number : " + it.document?.documentInfo?.refNumber
+                                "description : " + it.description
 
 
                     val dialog = AlertDialog.Builder(activity as Context)

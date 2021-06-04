@@ -10,6 +10,7 @@ import android.util.Log
 import th.or.etda.teda.mobile.common.CryptLib
 import th.or.etda.teda.mobile.common.SingleLiveEvent
 import th.or.etda.teda.mobile.data.Certificate
+import th.or.etda.teda.mobile.model.ExtrackP12
 import th.or.etda.teda.mobile.ui.home.HomeViewModel
 import th.or.etda.teda.mobile.util.Constants
 import th.or.etda.teda.mobile.util.KeyUtil.toBase64
@@ -137,7 +138,7 @@ class ImportHelper {
             context: Context,
             uri: Uri,
             password: String
-        ): PrivateKey {
+        ): ExtrackP12 {
             val keyFile = context.contentResolver.openInputStream(uri)
 
 
@@ -152,11 +153,11 @@ class ImportHelper {
             Log.i("alias", alias)
             val priKey: PrivateKey =
                 p12.getKey(p12.aliases().toList().first(), password.toCharArray()) as PrivateKey
-//            val certificateChain = p12.getCertificateChain(alias)
-//            val certCa = certificateChain.first().toBase64()
-//            val cartChains = certificateChain.last().toBase64()
+            val certificateChain = p12.getCertificateChain(alias)
+            val certCa = certificateChain.first().toBase64()
+            val cartChains = certificateChain.last().toBase64()
 
-            return priKey
+            return ExtrackP12(cartChains,certCa,priKey)
         }
 
         fun restore(

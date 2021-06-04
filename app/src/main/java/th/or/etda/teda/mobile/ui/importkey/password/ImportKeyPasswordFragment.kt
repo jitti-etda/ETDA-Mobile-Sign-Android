@@ -34,6 +34,7 @@ import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.ImportKeyPasswordFragmentBinding
+import th.or.etda.teda.mobile.model.ExtrackP12
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.DriveServiceHelper
 import th.or.etda.teda.mobile.ui.backupkey.password.BackupKeyPasswordFragment
 import th.or.etda.teda.mobile.ui.home.HomeViewModel
@@ -248,7 +249,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
 //
 //    }
 
-    fun saveData(key: String, privateKey: PrivateKey) {
+    fun saveData(key: String, extrackP12: ExtrackP12) {
         var name = key + "_" + UtilApps.timestampName()
         nameTimestamp = name
 //        val masterKey = MasterKey.Builder(requireContext())
@@ -262,7 +263,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
 //            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
 //            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
 //        )
-        val privKeyBytes: ByteArray? = privateKey?.encoded
+        val privKeyBytes: ByteArray? = extrackP12.privateKey?.encoded
         val privKeyStr = String(Base64.encode(privKeyBytes, 2))
 //
 //        val editor = sharedPreferences.edit()
@@ -301,7 +302,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
             if (it != null) {
                 it.edit().putString(name, privKeyStr).apply()
 
-                viewModel.addCertificate(Certificate(name, "", ""))
+                viewModel.addCertificate(Certificate(name,extrackP12.cert , extrackP12.chains))
 
                 alertBackupDialog()
             }

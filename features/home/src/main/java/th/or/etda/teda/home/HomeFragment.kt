@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import th.or.etda.teda.home.databinding.HomeFragmentBinding
-import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.ui.base.BaseFragment
 import java.security.KeyStore
 import java.security.PrivateKey
