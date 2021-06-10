@@ -29,7 +29,8 @@ import java.util.concurrent.ExecutionException
 class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 
     companion object {
-        const val SIGN_ALGORITHM = "MD5WithRSA"
+        //        const val SIGN_ALGORITHM = "MD5WithRSA"
+        const val SIGN_ALGORITHM = "SHA256withRSA"
         const val ANDROID_KEY_STORE = "AndroidKeyStore"
 //        const val ANDROID_KEY_STORE = "AndroidCAStore"
 
@@ -81,8 +82,14 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
         return signMessage
     }
 
+    var testSign  ="PGRzOlNpZ25lZEluZm8geG1sbnM6Y2N0cz0idXJuOnVuOnVuZWNlOnVuY2VmYWN0OmRvY3VtZW50YXRpb246c3RhbmRhcmQ6Q29yZUNvbXBvbmVudHNUZWNobmljYWxTcGVjaWZpY2F0aW9uOjIiIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiB4bWxuczpxdD0idXJuOmV0ZGE6dGVkYTpkYXRhOlF1YWxpZmllZERhdGFUeXBlOjEiIHhtbG5zOnRjPSJ1cm46ZXRkYTp0ZWRhOmRvY3VtZW50YXRpb246VHJhbnNjcmlwdDoxIiB4bWxuczp1ZHQ9InVybjp1bjp1bmVjZTp1bmNlZmFjdDpkYXRhOnN0YW5kYXJkOlVucXVhbGlmaWVkRGF0YVR5cGU6MTYiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvVFIvMjAwMS9SRUMteG1sLWMxNG4tMjAwMTAzMTUiPjwvZHM6Q2Fub25pY2FsaXphdGlvbk1ldGhvZD48ZHM6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjcnNhLXNoYTI1NiI+PC9kczpTaWduYXR1cmVNZXRob2Q+PGRzOlJlZmVyZW5jZSBJZD0ieG1sZHNpZy1lNDQ0NmZjYS0xZDY0LTQzODctYWUyOC1hNTI3NDY4Y2EzMGEtcmVmMCIgVVJJPSIiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjZW52ZWxvcGVkLXNpZ25hdHVyZSI+PC9kczpUcmFuc2Zvcm0+PC9kczpUcmFuc2Zvcm1zPjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiPjwvZHM6RGlnZXN0TWV0aG9kPjxkczpEaWdlc3RWYWx1ZT52aVlEbGtuNjFVV0g0dS9YM3VEOGdvTGtXSVNmWEhUZ0dieHFDdGQzK0tJPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PGRzOlJlZmVyZW5jZSBUeXBlPSJodHRwOi8vdXJpLmV0c2kub3JnLzAxOTAzI1NpZ25lZFByb3BlcnRpZXMiIFVSST0iI3htbGRzaWctZTQ0NDZmY2EtMWQ2NC00Mzg3LWFlMjgtYTUyNzQ2OGNhMzBhLXNpZ25lZHByb3BzIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ij48L2RzOkRpZ2VzdE1ldGhvZD48ZHM6RGlnZXN0VmFsdWU+Szd5SDJ1MVZJMGRQQ2tENWxWMm9LOVJxUHJ2TzZTODVPZTY5Z3ZtbnVsUT08L2RzOkRpZ2VzdFZhbHVlPjwvZHM6UmVmZXJlbmNlPjwvZHM6U2lnbmVkSW5mbz4="
+
     fun signWithKeyStore(signInfo: String, pvKey: String): String {
-        val binCpk: ByteArray = Base64.decode(pvKey,2)
+//        val publicKeyBytes = Base64.encode(userKeys.getPublic().getEncoded(), 0)
+//        val pubKey = String(publicKeyBytes)
+        var signString = Base64.decode(signInfo, Base64.NO_WRAP).toString(charset("UTF-8"))
+
+        val binCpk: ByteArray = Base64.decode(pvKey,Base64.NO_WRAP)
         val keyFactory = KeyFactory.getInstance("RSA")
         val privateKeySpec = PKCS8EncodedKeySpec(binCpk)
         var privateKey = keyFactory.generatePrivate(privateKeySpec)
@@ -96,10 +103,13 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 //        println("KEY == >$privKey")
         val signature = Signature.getInstance(SIGN_ALGORITHM)
         signature.initSign(privateKey)
-        signature.update(signInfo.toByteArray(Charsets.UTF_8))
-        val encodeSign = Base64.encodeToString(signature.sign(), Base64.DEFAULT)
+        signature.update(signString.toByteArray(Charsets.UTF_8))
+//        signature.update(signInfo.toByte())
+        val encodeSign = Base64.encodeToString(signature.sign(), Base64.NO_WRAP)
         signMessage = encodeSign
-        println("signMessage => $signMessage")
+//        println("signMessage => $signMessage")
+        Log.i("pvKey",pvKey)
+        Log.i("signMessage",signMessage)
         return signMessage
     }
 
@@ -215,7 +225,7 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
     val showLoading = ObservableBoolean()
     var showError = SingleLiveEvent<String>()
 
-     fun signingSignInfo(urls: String, certCa: String, certChains: String) {
+    fun signingSignInfo(urls: String, certCa: String, certChains: String) {
         showLoading.set(true)
 //        val mockData = SignedInfo(
 //            description = SignedInfo.SignedDescription(

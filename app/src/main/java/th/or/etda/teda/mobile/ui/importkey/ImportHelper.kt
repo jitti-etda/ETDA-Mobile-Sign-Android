@@ -102,25 +102,14 @@ class ImportHelper {
             val cert = p12.getCertificateChain(alias)
             val c = p12.getCertificate(alias)
 
-            generateSecretKey(KeyGenParameterSpec.Builder(
-                HomeViewModel.ALIAS,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
-                .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-                .setUserAuthenticationRequired(true)
-                // Invalidate the keys if the user has registered a new biometric
-                // credential, such as a new fingerprint. Can call this method only
-                // on Android 7.0 (API level 24) or higher. The variable
-                // "invalidatedByBiometricEnrollment" is true by default.
-                .setInvalidatedByBiometricEnrollment(true)
-                .build())
 
 
-//            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
-////                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
-//            ks.load(null)
-////                ks.setCertificateEntry(alias, cert[0])
-//            ks.setKeyEntry(name, priKey, null, cert)
+
+            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
+//                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
+            ks.load(null)
+//                ks.setCertificateEntry(alias, cert[0])
+            ks.setKeyEntry(name, priKey, null, cert)
 
             return Certificate(name, certCa, cartChains)
         }
@@ -137,7 +126,8 @@ class ImportHelper {
         fun extrackP12(
             context: Context,
             uri: Uri,
-            password: String
+            password: String,
+            name: String
         ): ExtrackP12 {
             val keyFile = context.contentResolver.openInputStream(uri)
 
@@ -156,6 +146,13 @@ class ImportHelper {
             val certificateChain = p12.getCertificateChain(alias)
             val certCa = certificateChain.first().toBase64()
             val cartChains = certificateChain.last().toBase64()
+
+//            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
+////                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
+//            ks.load(null)
+////                ks.setCertificateEntry(alias, cert[0])
+//            ks.setKeyEntry(name, priKey, null, certificateChain)
+
 
             return ExtrackP12(cartChains,certCa,priKey)
         }

@@ -30,42 +30,50 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/cert_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardElevation="5dp">
+            android:text="@{directory.name}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            tools:text="Cert" />
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="3"
+                android:text="Path:"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/cert_date"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="@{directory.path}"
+                android:textColor="@color/grey"
+                android:textSize="16sp" />
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/directory_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:text="@{directory.name}"
-                    android:textAppearance="?attr/textAppearanceListItem"
-                    android:textColor="@color/black"
-                    tools:text="Name" />
-
-                <TextView
-                    android:id="@+id/directory_path"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="@{directory.path}"
-                    android:textAppearance="?attr/textAppearanceListItemSmall"
-                    android:textColor="@color/black"
-                    tools:text="Name" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
+            android:layout_height="1dp"
+            android:background="@color/grey" />
     </LinearLayout>
 </layout>

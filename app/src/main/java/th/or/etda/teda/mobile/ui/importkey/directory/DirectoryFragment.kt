@@ -22,6 +22,8 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.BuildConfig.APPLICATION_ID
+import th.or.etda.teda.mobile.MainActivity
+import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.databinding.DirectoryFragmentBinding
@@ -40,13 +42,14 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
 
     private lateinit var adapterDirectory: DirectoryAdapter
     private val viewModel: DirectoryViewModel by viewModel()
-    private val backupPassViewModel: BackupKeyPasswordViewModel by viewModel()
 
     override fun onInitDependencyInjection() {
 
     }
 
     override fun onInitDataBinding() {
+        initActionBar()
+
         adapterDirectory = DirectoryAdapter()
         viewBinding.recyclerView.adapter = adapterDirectory
         viewBinding.recyclerView.addOnItemTouchListener(
@@ -137,6 +140,14 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
             }).check()
 
 
+    }
+
+    fun initActionBar(){
+        viewBinding.actionBar.tvTitle.setText("Import P12")
+        viewBinding.actionBar.btnBack.setOnClickListener {
+            val ac = activity as MainActivity2
+            ac.onBackPressed()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

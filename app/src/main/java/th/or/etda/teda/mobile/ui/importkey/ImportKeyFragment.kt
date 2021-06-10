@@ -63,11 +63,27 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                     ImportKeyFragmentDirections.nextActionImport()
                 findNavController().navigate(action)
             }
+            btnImportMenu.setOnClickListener {
+                val action =
+                    ImportKeyFragmentDirections.nextActionImport()
+                findNavController().navigate(action)
+            }
 
             btnRestoreKey.setOnClickListener {
 
                 val action =
                     ImportKeyFragmentDirections.nextActionRestore()
+                findNavController().navigate(action)
+            }
+            btnRestoreMenu.setOnClickListener {
+
+                val action =
+                    ImportKeyFragmentDirections.nextActionRestore()
+                findNavController().navigate(action)
+            }
+            btnSign.setOnClickListener {
+                val action =
+                    ImportKeyFragmentDirections.nextActionSign()
                 findNavController().navigate(action)
             }
 
@@ -144,8 +160,15 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         viewModel.getCertificateAll().observe(viewLifecycleOwner, Observer {
 
             adapterCert.submitList(it)
-            var ac = activity as MainActivity
-            ac.checkMenu()
+            if(adapterCert.currentList.isEmpty()){
+                viewBinding.layoutFirst.visibility =  View.VISIBLE
+                viewBinding.layoutMenu.visibility =  View.GONE
+            }else{
+                viewBinding.layoutFirst.visibility =  View.GONE
+                viewBinding.layoutMenu.visibility =  View.VISIBLE
+            }
+//            var ac = activity as MainActivity
+//            ac.checkMenu()
 //            if(it.isEmpty()){
 //                viewBinding.recyclerView.visibility = View.GONE
 //                viewBinding.layoutImport.visibility = View.VISIBLE

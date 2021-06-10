@@ -4,6 +4,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import org.koin.android.viewmodel.ext.android.viewModel
+import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.databinding.BackupKeyPasswordFragmentBinding
 import th.or.etda.teda.ui.base.BaseFragment
@@ -22,6 +23,8 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
 //    var certificate: Certificate? = null
 
     override fun onInitDataBinding() {
+
+        initActionBar()
 
         var isRestore = arguments?.let {
             BackupKeyPasswordFragmentArgs.fromBundle(it).isRestore
@@ -58,4 +61,11 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
 
     }
 
+    fun initActionBar() {
+        viewBinding.actionBar.tvTitle.setText("Set Password")
+        viewBinding.actionBar.btnBack.setOnClickListener {
+            val ac = activity as MainActivity2
+            ac.onBackPressed()
+        }
+    }
 }

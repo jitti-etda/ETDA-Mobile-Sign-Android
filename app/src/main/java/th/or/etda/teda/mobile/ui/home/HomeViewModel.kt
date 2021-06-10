@@ -27,7 +27,8 @@ import java.util.concurrent.ExecutionException
 class HomeViewModel(val homeRepository: SigningRepository) : ViewModel() {
 
     companion object {
-        const val SIGN_ALGORITHM = "MD5WithRSA"
+//        const val SIGN_ALGORITHM = "MD5WithRSA"
+        const val SIGN_ALGORITHM = "SHA256WithRSA"
         const val ANDROID_KEY_STORE = "AndroidKeyStore"
 //         var ANDROID_KEY_STORE = KeyStore.getDefaultType()
 //        const val ANDROID_KEY_STORE = "AndroidCAStore"

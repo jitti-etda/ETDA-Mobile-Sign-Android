@@ -56,7 +56,12 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
 
-
+        <action
+            android:id="@+id/next_action_to_first"
+            app:destination="@id/nav_sign"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_sign"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -147,6 +152,14 @@
         <action
             android:id="@+id/next_action_restore"
             app:destination="@id/nav_restore"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+
+        <action
+            android:id="@+id/next_action_sign"
+            app:destination="@id/nav_sign"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

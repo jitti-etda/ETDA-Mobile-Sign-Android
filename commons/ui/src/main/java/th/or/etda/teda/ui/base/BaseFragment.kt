@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
+import th.or.etda.teda.ui.R
 import javax.inject.Inject
 
 abstract class BaseFragment<B : ViewDataBinding>(
@@ -36,6 +38,7 @@ abstract class BaseFragment<B : ViewDataBinding>(
         viewBinding = DataBindingUtil.inflate(inflater, layoutId, container, false)
         viewBinding.lifecycleOwner = viewLifecycleOwner
         println("viewBinding => ${viewBinding.root}")
+
         return viewBinding.root
     }
 
@@ -47,8 +50,8 @@ abstract class BaseFragment<B : ViewDataBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onInitDataBinding()
-
         println("viewBinding => ${viewBinding.root}")
+
     }
 
     fun requireCompatActivity(): AppCompatActivity {

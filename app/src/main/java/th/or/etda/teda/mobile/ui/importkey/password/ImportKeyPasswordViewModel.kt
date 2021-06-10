@@ -105,7 +105,8 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
     var extractP12Success = SingleLiveEvent<ExtrackP12>()
     fun extractP12(
         context: Context,
-        password: String
+        password: String,
+        name: String
     ) {
 
         showLoading.set(true)
@@ -117,7 +118,8 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
                     var cert = ImportHelper.extrackP12(
                         context,
                         it,
-                        password
+                        password,
+                        name
                     )
                     showLoading.set(false)
                     extractP12Success.value = cert

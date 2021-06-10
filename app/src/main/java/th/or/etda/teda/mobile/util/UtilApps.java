@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Point;
 import android.icu.text.SimpleDateFormat;
 import android.view.inputmethod.InputMethodManager;
 
@@ -16,6 +17,18 @@ import java.util.Locale;
  */
 
 public class UtilApps {
+    public static int getScreenWidth(Activity activity) {
+        Point size = new Point();
+        activity.getWindowManager().getDefaultDisplay().getSize(size);
+        return size.x;
+    }
+
+    public static int getScreenHeight(Activity activity) {
+        Point size = new Point();
+        activity.getWindowManager().getDefaultDisplay().getSize(size);
+        return size.y;
+    }
+
     public static void alertDialog(Context c, String message) {
         new AlertDialog.Builder(c)
                 .setMessage(message)

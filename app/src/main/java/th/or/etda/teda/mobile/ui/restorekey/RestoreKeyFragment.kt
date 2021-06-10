@@ -2,9 +2,14 @@ package th.or.etda.teda.mobile.ui.restorekey
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -12,15 +17,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
+import com.google.android.material.button.MaterialButton
 import com.google.api.services.drive.DriveScopes
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
+import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.databinding.RestoreKeyFragmentBinding
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.DriveServiceHelper
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.GoogleDriveFileHolder
+import th.or.etda.teda.mobile.ui.importkey.password.ImportKeyPasswordFragmentDirections
 import th.or.etda.teda.mobile.util.Constants
+import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
 import java.io.File
 
@@ -30,7 +39,7 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
 ) {
 
     companion object {
-//        var fileDownload: InputStream? = null
+        //        var fileDownload: InputStream? = null
         var fileDownload: File? = null
     }
 
@@ -42,6 +51,9 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
     private var mDriveServiceHelper: DriveServiceHelper? = null
 
     override fun onInitDataBinding() {
+
+        initActionBar()
+
         adapterRestore = RestoreAdapter()
 
         authenGoogleDrive()
@@ -59,7 +71,7 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
                     object : RecyclerItemClickListener.OnItemClickListener {
                         override fun onItemClick(view: View, position: Int) {
                             var holder = adapterRestore.currentList[position]
-                            alertConfirm("Confirm restore file " + holder.name + "?", holder)
+                            alertConfirm("Confirm restore file\n" + holder.name + "?", holder)
 
                         }
 
@@ -123,6 +135,14 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
 
     }
 
+    fun initActionBar() {
+        viewBinding.actionBar.tvTitle.setText("Restore key")
+        viewBinding.actionBar.btnBack.setOnClickListener {
+            val ac = activity as MainActivity2
+            ac.onBackPressed()
+        }
+    }
+
 
     fun authenGoogleDrive() {
         val account = GoogleSignIn.getLastSignedInAccount(requireContext())
@@ -130,7 +150,7 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
         if (account == null) {
             signIn()
         } else {
-            viewBinding.tvEmail.setText(account.email)
+//            viewBinding.tvEmail.setText(account.email)
             mDriveServiceHelper =
                 DriveServiceHelper(
                     DriveServiceHelper.getGoogleDriveService(
@@ -177,10 +197,10 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_SIGN_IN -> if ( data != null) {
-                if(resultCode == Activity.RESULT_OK){
+            REQUEST_CODE_SIGN_IN -> if (data != null) {
+                if (resultCode == Activity.RESULT_OK) {
                     handleSignInResult(data)
-                }else{
+                } else {
                     findNavController().navigateUp()
                 }
 
@@ -248,7 +268,7 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
     suspend fun download(file: GoogleDriveFileHolder) {
         viewBinding.progressBar.visibility = View.VISIBLE
         mDriveServiceHelper?.let {
-            viewModel.downloadFile(requireContext(),it, file)
+            viewModel.downloadFile(requireContext(), it, file)
         }
         viewModel.downloadSuccess.observe(viewLifecycleOwner, Observer {
             viewBinding.progressBar.visibility = View.GONE
@@ -260,7 +280,7 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
                 file.name
             )
 
-            viewModel.copyStreamToFile(it,fileStoreEncrypt)
+            viewModel.copyStreamToFile(it, fileStoreEncrypt)
             fileDownload = fileStoreEncrypt
 //            val action =
 //                RestoreKeyFragmentDirections.nextActionBackupPassword(true)
@@ -275,16 +295,44 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
 
 
     private fun alertConfirm(message: String, file: GoogleDriveFileHolder) {
-        AlertDialog.Builder(requireActivity())
-            .setTitle("Restore")
-            .setMessage(message)
-            .setPositiveButton(
-                "Confirm"
-            ) { dialog, which ->
-                lifecycleScope.launch {
-                    download(file)
-                }
-            }.setNegativeButton("Cancel", null).show()
+//        AlertDialog.Builder(requireActivity())
+//            .setTitle("Restore")
+//            .setMessage(message)
+//            .setPositiveButton(
+//                "Confirm"
+//            ) { dialog, which ->
+//                lifecycleScope.launch {
+//                    download(file)
+//                }
+//            }.setNegativeButton("Cancel", null).show()
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_restore)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+        val tvTitle = dialog.findViewById<TextView>(R.id.tv_title)
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
+        tvTitle.setText(message)
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+            lifecycleScope.launch {
+                download(file)
+            }
+        }
+        noBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun alertComplete(message: String) {

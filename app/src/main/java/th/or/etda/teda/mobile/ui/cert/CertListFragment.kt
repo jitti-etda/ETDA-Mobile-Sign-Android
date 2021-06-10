@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
+import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.data.Certificate
@@ -53,7 +54,7 @@ class CertListFragment : BaseFragment<CertListFragmentBinding>(
     }
 
     override fun onInitDataBinding() {
-
+        initActionBar()
         adapterCert = CertAdapter()
         viewBinding.recyclerView.adapter = adapterCert
         getCertAll()
@@ -83,7 +84,13 @@ class CertListFragment : BaseFragment<CertListFragmentBinding>(
     }
 
 
-
+    fun initActionBar(){
+        viewBinding.actionBar.tvTitle.setText("Select Signature")
+        viewBinding.actionBar.btnBack.setOnClickListener {
+            val ac = activity as MainActivity2
+            ac.onBackPressed()
+        }
+    }
 
     fun getCertAll() {
 //        adapterCert.currentList.clear()

@@ -1,19 +1,26 @@
 package th.or.etda.teda.mobile.ui.restorekey.import
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.SharedPreferences
+import android.graphics.drawable.ColorDrawable
 import android.util.Base64
+import android.view.ViewGroup
+import android.view.Window
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
 import org.koin.android.viewmodel.ext.android.viewModel
+import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.RestoreImportKeyPasswordFragmentBinding
 import th.or.etda.teda.mobile.ui.home.HomeViewModel
+import th.or.etda.teda.mobile.ui.importkey.password.ImportKeyPasswordFragmentDirections
 import th.or.etda.teda.mobile.ui.restorekey.password.RestoreKeyPasswordFragment
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
@@ -33,6 +40,9 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
     }
 
     override fun onInitDataBinding() {
+
+        initActionBar()
+
         var dataDecrypt = RestoreKeyPasswordFragment.dataDecrypt
 
 
@@ -40,8 +50,8 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
 
             extractCaBtn.setOnClickListener {
 
-                var password = passwordText.text.toString()
-                var name = nameCert.text.toString()
+                var password = edtPassword.text.toString()
+                var name = edtName.text.toString()
                 if (password.isNotEmpty() && name.isNotEmpty()) {
                     if (dataDecrypt != null) {
                         restore(dataDecrypt, password, name)
@@ -55,6 +65,13 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
 
     }
 
+    fun initActionBar() {
+        viewBinding.actionBar.tvTitle.setText("Import P12 password")
+        viewBinding.actionBar.btnBack.setOnClickListener {
+            val ac = activity as MainActivity2
+            ac.onBackPressed()
+        }
+    }
 
     fun restore(data: ByteArray, password: String, name: String) {
 //        viewModel.restore(requireContext(), data, password, name)
@@ -105,21 +122,41 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
     }
 
     private fun alertComplete(message: String) {
-        AlertDialog.Builder(requireActivity())
-            .setTitle("Complete")
-            .setMessage(message)
-            .setCancelable(false)
-            .setPositiveButton(
-                "Close"
-            ) { dialog, which ->
+//        AlertDialog.Builder(requireActivity())
+//            .setTitle("Complete")
+//            .setMessage(message)
+//            .setCancelable(false)
+//            .setPositiveButton(
+//                "Close"
+//            ) { dialog, which ->
+//
+//                dialog.cancel()
+//
+//                val action =
+//                    RestoreImportKeyPasswordFragmentDirections.nextActionToFirst()
+//                findNavController().navigate(action)
+//
+//            }.show()
 
-                dialog.cancel()
 
-                val action =
-                    RestoreImportKeyPasswordFragmentDirections.nextActionToFirst()
-                findNavController().navigate(action)
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_restore_success)
+        dialog.getWindow()?.setBackgroundDrawable( ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(((UtilApps.getScreenWidth(getActivity()) * .9).toInt()), ViewGroup.LayoutParams.WRAP_CONTENT );
 
-            }.show()
+        dialog.setCancelable(false)
+
+
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+            val action =
+                RestoreImportKeyPasswordFragmentDirections.nextActionToFirst()
+            findNavController().navigate(action)
+        }
+
+        dialog.show()
     }
 
 }

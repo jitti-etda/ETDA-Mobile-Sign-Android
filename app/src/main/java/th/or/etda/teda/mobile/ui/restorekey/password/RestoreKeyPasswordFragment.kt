@@ -2,6 +2,7 @@ package th.or.etda.teda.mobile.ui.restorekey.password
 
 import androidx.navigation.fragment.findNavController
 import org.koin.android.viewmodel.ext.android.viewModel
+import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.databinding.RestoreKeyPasswordFragmentBinding
 import th.or.etda.teda.mobile.ui.importkey.ImportHelper
@@ -27,6 +28,7 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
 //    var certificate: Certificate? = null
 
     override fun onInitDataBinding() {
+        initActionBar()
 
         var file = RestoreKeyFragment.fileDownload
 
@@ -66,6 +68,14 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
                 RestoreKeyPasswordFragmentDirections.nextActionRestoreImportPassword()
             findNavController().navigate(action)
 
+        }
+    }
+
+    fun initActionBar() {
+        viewBinding.actionBar.tvTitle.setText("Password Backup")
+        viewBinding.actionBar.btnBack.setOnClickListener {
+            val ac = activity as MainActivity2
+            ac.onBackPressed()
         }
     }
 
