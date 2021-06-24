@@ -14,4 +14,7 @@
 
     <string name="close">Close</string>
     <string name="open">Open</string>
+    <string name="alert_input">กรุณาใส่ข้อมูลให้ครบ</string>
+    <string name="alert_min_length">รหัสผ่านอย่างน้อย 8 ตัว</string>
+    <string name="alert_google_drive">พบข้อผิดพลาดในการเชื่อมต่อ กรุณาทำการ Log in ใหม่</string>
 </resources>

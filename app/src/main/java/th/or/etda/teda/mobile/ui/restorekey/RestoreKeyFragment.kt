@@ -18,6 +18,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.material.button.MaterialButton
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
@@ -27,7 +31,6 @@ import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.databinding.RestoreKeyFragmentBinding
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.DriveServiceHelper
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.GoogleDriveFileHolder
-import th.or.etda.teda.mobile.ui.importkey.password.ImportKeyPasswordFragmentDirections
 import th.or.etda.teda.mobile.util.Constants
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
@@ -179,10 +182,12 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
     private fun signIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .requestScopes(Scope(DriveScopes.DRIVE_FILE))
-            .requestScopes(Scope(DriveScopes.DRIVE))
-            .requestScopes(Scope(DriveScopes.DRIVE_APPDATA))
-            .requestScopes(Scope(DriveScopes.DRIVE_METADATA))
+            .requestScopes(
+                Scope(DriveScopes.DRIVE_FILE),
+                Scope(DriveScopes.DRIVE),
+                Scope(DriveScopes.DRIVE_APPDATA),
+                Scope(DriveScopes.DRIVE_METADATA)
+            )
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireCompatActivity(), gso)
 //        mGoogleSignInClient = buildGoogleSignInClient();
@@ -222,9 +227,13 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
                     )
                 )
                 getFileBackup()
+
                 Log.d("MainActivity.TAG", "handleSignInResult: $mDriveServiceHelper")
             }
-            .addOnFailureListener { e -> Log.e("MainActivity.TAG", "Unable to sign in.", e) }
+            .addOnFailureListener { e ->
+                Log.e("MainActivity.TAG", "Unable to sign in.", e)
+
+            }
     }
 
 
@@ -236,21 +245,13 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
         mDriveServiceHelper?.let {
             viewModel.getFileBackup(requireContext(), it)
 
-//            val CrearEventoHilo: Thread = object : Thread() {
-//                override fun run() {
-//                    val fileMetadata = File()
-//                    fileMetadata.setName("photo.jpg")
-//                    val filePath = File("files/photo.jpg")
-//                    val mediaContent = FileContent("image/jpeg", filePath)
-//                    val file: File = driveService.files().create(fileMetadata, mediaContent)
-//                        .setFields("id")
-//                        .execute()
-//                    System.out.println("File ID: " + file.getId())
-//                }
-//            }
-//            CrearEventoHilo.start()
-
         }
+        viewModel.isSuccess.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                alertLogin()
+
+            }
+        })
         viewModel.folderGoogleDriveLive.observe(viewLifecycleOwner, Observer {
             viewBinding.progressBar.visibility = View.GONE
         })
@@ -282,8 +283,6 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
 
             viewModel.copyStreamToFile(it, fileStoreEncrypt)
             fileDownload = fileStoreEncrypt
-//            val action =
-//                RestoreKeyFragmentDirections.nextActionBackupPassword(true)
             val action =
                 RestoreKeyFragmentDirections.nextActionRestorePassword()
             findNavController().navigate(action)
@@ -295,16 +294,6 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
 
 
     private fun alertConfirm(message: String, file: GoogleDriveFileHolder) {
-//        AlertDialog.Builder(requireActivity())
-//            .setTitle("Restore")
-//            .setMessage(message)
-//            .setPositiveButton(
-//                "Confirm"
-//            ) { dialog, which ->
-//                lifecycleScope.launch {
-//                    download(file)
-//                }
-//            }.setNegativeButton("Cancel", null).show()
 
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -335,16 +324,30 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
         dialog.show()
     }
 
-    private fun alertComplete(message: String) {
-        AlertDialog.Builder(requireActivity())
-            .setTitle("Complete")
-            .setMessage(message)
-            .setPositiveButton(
-                "Close"
-            ) { dialog, which ->
+    private fun alertLogin() {
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+        val tvTitle = dialog.findViewById<TextView>(R.id.tv_title)
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+
+        tvTitle.setText(getString(R.string.alert_google_drive))
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+            authenGoogleDrive()
+        }
 
 
-            }.show()
+        dialog.show()
     }
-
 }

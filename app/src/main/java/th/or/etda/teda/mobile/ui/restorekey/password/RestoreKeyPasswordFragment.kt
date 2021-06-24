@@ -1,6 +1,11 @@
 package th.or.etda.teda.mobile.ui.restorekey.password
 
+import android.app.Dialog
+import android.graphics.drawable.ColorDrawable
+import android.view.ViewGroup
+import android.view.Window
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
@@ -38,7 +43,8 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
 
             btnBackup.setOnClickListener {
                 val password = viewBinding.edtPassword.text.toString()
-                if (password.isNotEmpty()) {
+
+                if (password.trim().isNotEmpty()) {
 
                     if (file != null) {
                         val fileInputStream = FileInputStream(file)
@@ -46,6 +52,9 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
 
                     }
 
+                }else{
+//                    viewBinding.edtPassword.setError(getString(R.string.please_input))
+                    alertInput()
                 }
 
             }
@@ -86,4 +95,26 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
 
     }
 
+    private fun alertInput() {
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
 }

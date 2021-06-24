@@ -111,7 +111,7 @@ class ImportHelper {
 //                ks.setCertificateEntry(alias, cert[0])
             ks.setKeyEntry(name, priKey, null, cert)
 
-            return Certificate(name, certCa, cartChains)
+            return Certificate(name, certCa, cartChains,UtilApps.currentDate())
         }
 
 
@@ -147,11 +147,11 @@ class ImportHelper {
             val certCa = certificateChain.first().toBase64()
             val cartChains = certificateChain.last().toBase64()
 
-//            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
-////                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
-//            ks.load(null)
-////                ks.setCertificateEntry(alias, cert[0])
-//            ks.setKeyEntry(name, priKey, null, certificateChain)
+            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
+//                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
+            ks.load(null)
+//                ks.setCertificateEntry(alias, cert[0])
+            ks.setKeyEntry(name, priKey, null, certificateChain)
 
 
             return ExtrackP12(cartChains,certCa,priKey)
@@ -189,13 +189,13 @@ class ImportHelper {
             ks.setKeyEntry(name, priKey, null, cert)
 
 
-            return Certificate(name, certCa, cartChains)
+            return Certificate(name, certCa, cartChains,UtilApps.currentDate())
         }
 
         fun restoreP12(
             byteBuff: ByteArray,
             password: String, name: String
-        ): PrivateKey {
+        ): ExtrackP12 {
 //            val keyFile = context.contentResolver.openInputStream(uri)
 
             val keyFile: InputStream = ByteArrayInputStream(byteBuff)
@@ -212,10 +212,10 @@ class ImportHelper {
                 p12.getKey(p12.aliases().toList().first(), password.toCharArray()) as PrivateKey
 //                    val privateKey: Key = p12.getKey(alias, password)
 
-//            val aliasesName = p12.aliases().toList().first()
-//            val certificateChain = p12.getCertificateChain(aliasesName)
-//            val certCa = certificateChain.first().toBase64()
-//            val cartChains = certificateChain.last().toBase64()
+            val aliasesName = p12.aliases().toList().first()
+            val certificateChain = p12.getCertificateChain(aliasesName)
+            val certCa = certificateChain.first().toBase64()
+            val cartChains = certificateChain.last().toBase64()
 //
 //            val cert = p12.getCertificateChain(alias)
 //            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
@@ -225,7 +225,7 @@ class ImportHelper {
 //            ks.setKeyEntry(name, priKey, null, cert)
 
 
-            return priKey
+             return ExtrackP12(cartChains,certCa,priKey)
         }
 
         public fun encryptP12forBackup(

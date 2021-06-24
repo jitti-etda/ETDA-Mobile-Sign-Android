@@ -1,12 +1,19 @@
 package th.or.etda.teda.mobile.ui.backupkey.password
 
+import android.app.Dialog
+import android.graphics.drawable.ColorDrawable
+import android.view.ViewGroup
+import android.view.Window
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.databinding.BackupKeyPasswordFragmentBinding
+import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
 
 
@@ -39,7 +46,11 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
 
             btnBackup.setOnClickListener {
                 val password = viewBinding.edtPassword.text.toString()
-                if (password.isNotEmpty()) {
+                if (password.trim().length < 8) {
+                    alertMinLength(getString(R.string.alert_min_length))
+                    return@setOnClickListener
+                }
+                if (password.trim().isNotEmpty()) {
                     setFragmentResult(
                         REQUEST_KEY,
                         bundleOf("password" to password)
@@ -48,6 +59,9 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
 //                    viewModel.encryptP12(requireContext(),edtPassword.text.toString().toCharArray()).let {
 //                        UtilApps.alertDialog(requireContext(),"Create p12 Success")
 //                    }
+                } else {
+//                    viewBinding.edtPassword.setError(getString(R.string.please_input))
+                    alertInput()
                 }
 
             }
@@ -67,5 +81,51 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
             val ac = activity as MainActivity2
             ac.onBackPressed()
         }
+    }
+
+    private fun alertInput() {
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun alertMinLength(title: String) {
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+        var tv_title = dialog.findViewById<TextView>(R.id.tv_title)
+        tv_title.setText(title)
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

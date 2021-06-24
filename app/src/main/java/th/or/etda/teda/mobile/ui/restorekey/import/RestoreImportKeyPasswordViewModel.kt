@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import th.or.etda.teda.mobile.common.SingleLiveEvent
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.data.CertificateRepository
+import th.or.etda.teda.mobile.model.ExtrackP12
 import th.or.etda.teda.mobile.ui.importkey.ImportHelper
 import th.or.etda.teda.mobile.util.UtilApps
 import java.io.IOException
@@ -18,7 +19,7 @@ class RestoreImportKeyPasswordViewModel(val repository: CertificateRepository) :
 
     var restoreSuccess = MutableLiveData<Boolean>()
 
-    var extractP12Success = SingleLiveEvent<PrivateKey>()
+    var extractP12Success = SingleLiveEvent<ExtrackP12>()
     fun restore(context: Context, byteArray: ByteArray, password: String, nameRoot: String) {
         viewModelScope.launch {
             try {

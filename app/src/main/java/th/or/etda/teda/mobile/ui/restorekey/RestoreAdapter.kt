@@ -23,14 +23,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import th.or.etda.teda.mobile.data.Certificate
-import th.or.etda.teda.mobile.databinding.ListItemDirectoryBinding
 import th.or.etda.teda.mobile.databinding.ListItemRestoreBinding
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.GoogleDriveFileHolder
+import th.or.etda.teda.mobile.util.UtilApps
 
 
-class RestoreAdapter : ListAdapter<GoogleDriveFileHolder, RecyclerView.ViewHolder>(CertDiffCallback()) {
-
-
+class RestoreAdapter :
+    ListAdapter<GoogleDriveFileHolder, RecyclerView.ViewHolder>(CertDiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -49,7 +48,8 @@ class RestoreAdapter : ListAdapter<GoogleDriveFileHolder, RecyclerView.ViewHolde
         (holder as ViewHolder).bind(directory)
     }
 
-    class ViewHolder(private val binding: ListItemRestoreBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: ListItemRestoreBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
 //            binding.setClickListener {
 //                binding.cert?.let { plant ->
@@ -79,23 +79,27 @@ class RestoreAdapter : ListAdapter<GoogleDriveFileHolder, RecyclerView.ViewHolde
 //                certTitle.setText(item.certName)
                 driveHolder = item
                 executePendingBindings()
-
+                certDate.setText(UtilApps.dateConvert(item.createdTime))
             }
         }
     }
-
-
 
 
 }
 
 private class CertDiffCallback : DiffUtil.ItemCallback<GoogleDriveFileHolder>() {
 
-    override fun areItemsTheSame(oldItem: GoogleDriveFileHolder, newItem: GoogleDriveFileHolder): Boolean {
+    override fun areItemsTheSame(
+        oldItem: GoogleDriveFileHolder,
+        newItem: GoogleDriveFileHolder
+    ): Boolean {
         return oldItem.modifiedTime == newItem.modifiedTime
     }
 
-    override fun areContentsTheSame(oldItem: GoogleDriveFileHolder, newItem: GoogleDriveFileHolder): Boolean {
+    override fun areContentsTheSame(
+        oldItem: GoogleDriveFileHolder,
+        newItem: GoogleDriveFileHolder
+    ): Boolean {
         return oldItem == newItem
     }
 }

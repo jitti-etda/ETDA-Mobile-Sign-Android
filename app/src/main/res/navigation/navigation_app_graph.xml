@@ -58,9 +58,9 @@
 
         <action
             android:id="@+id/next_action_to_first"
-            app:destination="@id/nav_sign"
+            app:destination="@id/nav_import"
             app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_sign"
+            app:popUpTo="@+id/nav_import"
             app:popUpToInclusive="true" />
     </fragment>
 

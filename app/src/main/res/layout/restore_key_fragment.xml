@@ -31,7 +31,7 @@
                 android:padding="10dp"
                 android:textColor="@color/blue"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="@dimen/text_normal"
                 android:layout_height="wrap_content" />
 
             <androidx.recyclerview.widget.RecyclerView

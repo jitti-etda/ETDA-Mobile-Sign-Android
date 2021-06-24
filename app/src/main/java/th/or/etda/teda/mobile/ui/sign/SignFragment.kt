@@ -69,9 +69,11 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     //    private lateinit var viewModel: HomeViewModel
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     lateinit var cameraSelector: CameraSelector
-//    lateinit var previewView: PreviewView
+
+    //    lateinit var previewView: PreviewView
     var cameraProvider: ProcessCameraProvider? = null
-//    var previewUseCase: Preview? = null
+
+    //    var previewUseCase: Preview? = null
 //    private var analysisUseCase: ImageAnalysis? = null
     private var mScannerView: ZXingScannerView? = null
 
@@ -119,7 +121,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
             }
         }
         mScannerView?.setBorderStrokeWidth(20)
-        mScannerView?.setBorderColor(resources.getColor(R.color.blue,null))
+        mScannerView?.setBorderColor(resources.getColor(R.color.blue, null))
         viewBinding.previewView.addView(mScannerView)
     }
 
@@ -177,19 +179,24 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 //            resumeScanner()
 
 //            certName?.let { postSigned(qrcodeResult, it) }
-            certName?.let {
+
 //                checkBioAuth(it?.certName)
+            if (certName != null) {
                 if (BiometricEncryptedSharedPreferences.checkBio(requireCompatActivity())) {
-                    setUpAuth(it.certName)
+                    setUpAuth(certName!!.certName)
                 }
+            } else {
+                resumeScanner()
             }
+
+
         }
 
 
 //        signedInfoPost()
     }
 
-    fun initActionBar(){
+    fun initActionBar() {
         viewBinding.actionBar.tvTitle.setText("Scan QR Code")
         viewBinding.actionBar.btnBack.setOnClickListener {
             val ac = activity as MainActivity2
@@ -369,8 +376,6 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 //    override fun onResume() {
 //        super.onResume()
 //        resumeScanner()
-//
-//
 //    }
 
 
@@ -404,93 +409,6 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     }
 
 
-//    private fun bindCameraUseCases() {
-//        if (cameraProvider == null) return
-//        previewUseCase?.let {
-//            cameraProvider!!.unbind(previewUseCase)
-//        }
-//        previewUseCase = Preview.Builder().setTargetAspectRatio(screenAspectRatio)
-//            .setTargetRotation(previewView.display.rotation)
-//            .build()
-//        previewUseCase!!.setSurfaceProvider(previewView.surfaceProvider)
-//
-//        try {
-//            cameraProvider!!.bindToLifecycle(viewLifecycleOwner, cameraSelector, previewUseCase)
-//        } catch (illegalStateException: IllegalStateException) {
-//            Log.e(TAG, illegalStateException.message.toString())
-//        } catch (illegalArgumentException: IllegalArgumentException) {
-//            Log.e(TAG, illegalArgumentException.message.toString())
-//        }
-//
-//    }
-//
-//    private fun bindAnalyseUseCase() {
-//        if (cameraProvider == null) return
-//        val options = BarcodeScannerOptions.Builder()
-//            .setBarcodeFormats(
-//                Barcode.FORMAT_QR_CODE
-//            )
-//            .build()
-//        val barcodeScanner = BarcodeScanning.getClient(options)
-//        if (analysisUseCase == null) {
-//            cameraProvider!!.unbind(analysisUseCase)
-//        }
-//
-//        analysisUseCase = ImageAnalysis.Builder()
-//            .setTargetAspectRatio(screenAspectRatio)
-//            .setTargetRotation(previewView.display.rotation)
-//            .build()
-//
-//        val cameraExecutor = Executors.newSingleThreadExecutor()
-//        analysisUseCase?.setAnalyzer(
-//            cameraExecutor,
-//            ImageAnalysis.Analyzer { image: ImageProxy ->
-//                processImageProxy(barcodeScanner, image)
-//            }
-//        )
-//
-//        try {
-//            cameraProvider!!.bindToLifecycle(viewLifecycleOwner, cameraSelector, analysisUseCase)
-//        } catch (illegalStateException: IllegalStateException) {
-//            Log.e(TAG, illegalStateException.message.toString())
-//        } catch (illegalArgumentException: IllegalArgumentException) {
-//            Log.e(TAG, illegalArgumentException.message.toString())
-//        }
-//    }
-
-
-//    @SuppressLint("UnsafeExperimentalUsageError")
-//    private fun processImageProxy(
-//        barcodeScanner: BarcodeScanner,
-//        imageProxy: ImageProxy
-//    ) {
-//        val inputImage = InputImage.fromMediaImage(
-//            imageProxy.image!!,
-//            imageProxy.imageInfo.rotationDegrees
-//        )
-//
-//        barcodeScanner.process(inputImage)
-//            .addOnSuccessListener { barcodes ->
-//                barcodes.forEach {
-//                    Log.d(TAG, it.rawValue)
-//                }
-//                println("sum =>$sum")
-//            }
-//            .addOnFailureListener {
-//                Log.e(TAG, it.message.toString())
-//            }.addOnCompleteListener {
-//                imageProxy.close()
-//            }
-//    }
-
-//    private fun aspectRatio(width: Int, height: Int): Int {
-//        val previewRatio = max(width, height).toDouble() / min(width, height)
-//        if (abs(previewRatio - RATIO_4_3_VALUE) <= abs(previewRatio - RATIO_16_9_VALUE)) {
-//            return AspectRatio.RATIO_4_3
-//        }
-//        return AspectRatio.RATIO_16_9
-//    }
-
     override fun handleResult(rawResult: Result?) {
         println("rawResult => ${rawResult?.text}")
 //        mScannerView?.stopCamera()
@@ -506,7 +424,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 //                    "url : " + data[SigningSingUtil.URL.ordinal] + "\n" +
 //                            "request_id : " + data[SigningSingUtil.REQUEST_ID.ordinal] + "\n" +
 //                            "token : " + data[SigningSingUtil.TOKEN.ordinal] + "\n" +
-                    "ref_number : " + data[SigningSingUtil.REF_NUMBER.ordinal]
+                    "หมายเลข Reference : " + data[SigningSingUtil.REF_NUMBER.ordinal]
 
 //                AlertDialog.Builder(requireContext())
 //                    .setTitle("ข้อมูลเอกสารที่ลงนาม")
@@ -523,8 +441,12 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
                 val dialog = Dialog(requireCompatActivity())
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 dialog.setContentView(R.layout.dialog_qrcode_info)
-                dialog.getWindow()?.setBackgroundDrawable( ColorDrawable(getResources().getColor(R.color.transparent)));
-                dialog.getWindow()?.setLayout(((UtilApps.getScreenWidth(getActivity()) * .9).toInt()), ViewGroup.LayoutParams.WRAP_CONTENT );
+                dialog.getWindow()
+                    ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+                dialog.getWindow()?.setLayout(
+                    ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                );
 
                 dialog.setCancelable(false)
 
@@ -567,7 +489,6 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 
     }
 
-    var testSign = "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"
 
     private fun postSigned(result: String, cert: Certificate) {
 //        viewBinding.progressBar.visibility = View.VISIBLE
@@ -644,8 +565,8 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 //                    val signString = Base64.decode(it1, Base64.DEFAULT)
 //                    val data: ByteArray = Base64.decode(it, Base64.DEFAULT)
 
-                    dialogSignInfo(message,cert,it1,result)
-
+//                    dialogSignInfo(message, cert, it1, result)
+                    signSignature(cert, it1, result)
                 }
 
 
@@ -707,12 +628,16 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 //
 //    }
 
-    fun dialogSignInfo(message:String,cert:Certificate,signedInfo:String,result: String){
+    fun dialogSignInfo(message: String, cert: Certificate, signedInfo: String, result: String) {
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_sign_info)
-        dialog.getWindow()?.setBackgroundDrawable( ColorDrawable(getResources().getColor(R.color.transparent)));
-        dialog.getWindow()?.setLayout(((UtilApps.getScreenWidth(getActivity()) * .9).toInt()), ViewGroup.LayoutParams.WRAP_CONTENT );
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
 
         dialog.setCancelable(false)
 
@@ -722,7 +647,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
         yesBtn.setOnClickListener {
             dialog.dismiss()
-            signSignature(cert,signedInfo,result)
+            signSignature(cert, signedInfo, result)
         }
         noBtn.setOnClickListener {
             dialog.dismiss()
@@ -732,10 +657,10 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         dialog.show()
     }
 
-    fun signSignature(cert:Certificate,signedInfo:String,result: String){
+    fun signSignature(cert: Certificate, signedInfo: String, result: String) {
 
-//                        var signature = viewModel.signWithKeyStore(it1, cert)
-//                        postSignedSubmit(result, signature)
+//        var signature = viewModel.signWithKeyStore(signedInfo, cert)
+//        postSignedSubmit(result, signature)
 
 
         var isCache = false
@@ -802,12 +727,16 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         }
     }
 
-    fun dialogSignSuccess(){
+    fun dialogSignSuccess() {
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_sign_info_success)
-        dialog.getWindow()?.setBackgroundDrawable( ColorDrawable(getResources().getColor(R.color.transparent)));
-        dialog.getWindow()?.setLayout(((UtilApps.getScreenWidth(getActivity()) * .9).toInt()), ViewGroup.LayoutParams.WRAP_CONTENT );
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
 
         dialog.setCancelable(false)
 

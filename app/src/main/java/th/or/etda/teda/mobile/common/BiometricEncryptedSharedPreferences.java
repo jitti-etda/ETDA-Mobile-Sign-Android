@@ -31,6 +31,8 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 
 
+import th.or.etda.teda.mobile.util.UtilApps;
+
 import static androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG;
 import static androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL;
 
@@ -156,7 +158,8 @@ public class BiometricEncryptedSharedPreferences {
                 Log.e("MY_APP_TAG", "Biometric features are currently unavailable.");
                 return false;
             case BiometricManager.BIOMETRIC_ERROR_UNSUPPORTED:
-                Toast.makeText(context,"Device not support Biometric",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context,"Device not support Biometric",Toast.LENGTH_SHORT).show();
+                UtilApps.alertDialog(context,"Device not support Biometric");
                 return false;
             case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
                 Log.e("MY_APP_TAG", "BIOMETRIC_ERROR_NONE_ENROLLED.");

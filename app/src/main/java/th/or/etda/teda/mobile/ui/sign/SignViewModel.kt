@@ -59,7 +59,9 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
     val signedInfoSubmitError = SingleLiveEvent<DataResponse>()
 
 
-    fun signWithKeyStore(signInfo: String, cert: Certificate): String {
+    fun signWithKeyStore(sign: String, cert: Certificate): String {
+        var signInfo = Base64.decode(sign, Base64.NO_WRAP)
+
         val keyStore = KeyStore.getInstance(ANDROID_KEY_STORE)
 //        val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
         keyStore.load(null)
@@ -75,19 +77,21 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 //        println("KEY == >$privKey")
         val signature = Signature.getInstance(SIGN_ALGORITHM)
         signature.initSign(pvKey)
-        signature.update(signInfo.toByteArray(Charsets.UTF_8))
-        val encodeSign = Base64.encodeToString(signature.sign(), Base64.DEFAULT)
+        signature.update(signInfo)
+        val encodeSign = Base64.encodeToString(signature.sign(), Base64.NO_WRAP)
+//        val signed = String(signature.sign(), Charsets.UTF_8)
         signMessage = encodeSign
-        println("signMessage => $signMessage")
+        Log.i("signMessage",signMessage)
         return signMessage
     }
 
-    var testSign  ="PGRzOlNpZ25lZEluZm8geG1sbnM6Y2N0cz0idXJuOnVuOnVuZWNlOnVuY2VmYWN0OmRvY3VtZW50YXRpb246c3RhbmRhcmQ6Q29yZUNvbXBvbmVudHNUZWNobmljYWxTcGVjaWZpY2F0aW9uOjIiIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiB4bWxuczpxdD0idXJuOmV0ZGE6dGVkYTpkYXRhOlF1YWxpZmllZERhdGFUeXBlOjEiIHhtbG5zOnRjPSJ1cm46ZXRkYTp0ZWRhOmRvY3VtZW50YXRpb246VHJhbnNjcmlwdDoxIiB4bWxuczp1ZHQ9InVybjp1bjp1bmVjZTp1bmNlZmFjdDpkYXRhOnN0YW5kYXJkOlVucXVhbGlmaWVkRGF0YVR5cGU6MTYiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvVFIvMjAwMS9SRUMteG1sLWMxNG4tMjAwMTAzMTUiPjwvZHM6Q2Fub25pY2FsaXphdGlvbk1ldGhvZD48ZHM6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjcnNhLXNoYTI1NiI+PC9kczpTaWduYXR1cmVNZXRob2Q+PGRzOlJlZmVyZW5jZSBJZD0ieG1sZHNpZy1lNDQ0NmZjYS0xZDY0LTQzODctYWUyOC1hNTI3NDY4Y2EzMGEtcmVmMCIgVVJJPSIiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjZW52ZWxvcGVkLXNpZ25hdHVyZSI+PC9kczpUcmFuc2Zvcm0+PC9kczpUcmFuc2Zvcm1zPjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiPjwvZHM6RGlnZXN0TWV0aG9kPjxkczpEaWdlc3RWYWx1ZT52aVlEbGtuNjFVV0g0dS9YM3VEOGdvTGtXSVNmWEhUZ0dieHFDdGQzK0tJPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PGRzOlJlZmVyZW5jZSBUeXBlPSJodHRwOi8vdXJpLmV0c2kub3JnLzAxOTAzI1NpZ25lZFByb3BlcnRpZXMiIFVSST0iI3htbGRzaWctZTQ0NDZmY2EtMWQ2NC00Mzg3LWFlMjgtYTUyNzQ2OGNhMzBhLXNpZ25lZHByb3BzIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ij48L2RzOkRpZ2VzdE1ldGhvZD48ZHM6RGlnZXN0VmFsdWU+Szd5SDJ1MVZJMGRQQ2tENWxWMm9LOVJxUHJ2TzZTODVPZTY5Z3ZtbnVsUT08L2RzOkRpZ2VzdFZhbHVlPjwvZHM6UmVmZXJlbmNlPjwvZHM6U2lnbmVkSW5mbz4="
+//    var testXml = "PGRzOlNpZ25lZEluZm8geG1sbnM6Y2N0cz0idXJuOnVuOnVuZWNlOnVuY2VmYWN0OmRvY3VtZW50YXRpb246c3RhbmRhcmQ6Q29yZUNvbXBvbmVudHNUZWNobmljYWxTcGVjaWZpY2F0aW9uOjIiIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiB4bWxuczpxdD0idXJuOmV0ZGE6dGVkYTpkYXRhOlF1YWxpZmllZERhdGFUeXBlOjEiIHhtbG5zOnRjPSJ1cm46ZXRkYTp0ZWRhOmRvY3VtZW50YXRpb246VHJhbnNjcmlwdDoxIiB4bWxuczp1ZHQ9InVybjp1bjp1bmVjZTp1bmNlZmFjdDpkYXRhOnN0YW5kYXJkOlVucXVhbGlmaWVkRGF0YVR5cGU6MTYiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvVFIvMjAwMS9SRUMteG1sLWMxNG4tMjAwMTAzMTUiPjwvZHM6Q2Fub25pY2FsaXphdGlvbk1ldGhvZD48ZHM6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjcnNhLXNoYTI1NiI+PC9kczpTaWduYXR1cmVNZXRob2Q+PGRzOlJlZmVyZW5jZSBJZD0ieG1sZHNpZy1lNDQ0NmZjYS0xZDY0LTQzODctYWUyOC1hNTI3NDY4Y2EzMGEtcmVmMCIgVVJJPSIiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjZW52ZWxvcGVkLXNpZ25hdHVyZSI+PC9kczpUcmFuc2Zvcm0+PC9kczpUcmFuc2Zvcm1zPjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiPjwvZHM6RGlnZXN0TWV0aG9kPjxkczpEaWdlc3RWYWx1ZT52aVlEbGtuNjFVV0g0dS9YM3VEOGdvTGtXSVNmWEhUZ0dieHFDdGQzK0tJPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PGRzOlJlZmVyZW5jZSBUeXBlPSJodHRwOi8vdXJpLmV0c2kub3JnLzAxOTAzI1NpZ25lZFByb3BlcnRpZXMiIFVSST0iI3htbGRzaWctZTQ0NDZmY2EtMWQ2NC00Mzg3LWFlMjgtYTUyNzQ2OGNhMzBhLXNpZ25lZHByb3BzIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ij48L2RzOkRpZ2VzdE1ldGhvZD48ZHM6RGlnZXN0VmFsdWU+Szd5SDJ1MVZJMGRQQ2tENWxWMm9LOVJxUHJ2TzZTODVPZTY5Z3ZtbnVsUT08L2RzOkRpZ2VzdFZhbHVlPjwvZHM6UmVmZXJlbmNlPjwvZHM6U2lnbmVkSW5mbz4="
+//    var testSign  ="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"
 
     fun signWithKeyStore(signInfo: String, pvKey: String): String {
 //        val publicKeyBytes = Base64.encode(userKeys.getPublic().getEncoded(), 0)
 //        val pubKey = String(publicKeyBytes)
-        var signString = Base64.decode(signInfo, Base64.NO_WRAP).toString(charset("UTF-8"))
+        var signString = Base64.decode(signInfo, Base64.NO_WRAP)
 
         val binCpk: ByteArray = Base64.decode(pvKey,Base64.NO_WRAP)
         val keyFactory = KeyFactory.getInstance("RSA")
@@ -103,7 +107,7 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 //        println("KEY == >$privKey")
         val signature = Signature.getInstance(SIGN_ALGORITHM)
         signature.initSign(privateKey)
-        signature.update(signString.toByteArray(Charsets.UTF_8))
+        signature.update(signString)
 //        signature.update(signInfo.toByte())
         val encodeSign = Base64.encodeToString(signature.sign(), Base64.NO_WRAP)
         signMessage = encodeSign
@@ -175,51 +179,6 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
         return null
     }
 
-
-    var mockSignSuccess = "{\n" +
-            "    \"description\": \"\",\n" +
-            "    \"document\": {\n" +
-            "        \"client_id\": \"docserver_18\",\n" +
-            "        \"dnList\": null,\n" +
-            "        \"document_category\": \"PDF\",\n" +
-            "        \"document_info\": {\n" +
-            "            \"business_type\": \"\",\n" +
-            "            \"document_description\": \"Documents waiting to be signed\",\n" +
-            "            \"document_name\": \"test\",\n" +
-            "            \"document_type\": \"application/pdf\",\n" +
-            "            \"ref_number\": \"187153\"\n" +
-            "        },\n" +
-            "        \"document_server_reject_at\": \"0001-01-01T00:00:00Z\",\n" +
-            "        \"hash_result\": {\n" +
-            "            \"description\": \"\",\n" +
-            "            \"digest_method\": 1,\n" +
-            "            \"document_hash\": \"J5Ydulsnl6DSAsxDYW/XLEHaHi9t3styrBN9khaXh5M=\",\n" +
-            "            \"result\": \"accept\",\n" +
-            "            \"xml_namespace\": \"\"\n" +
-            "        },\n" +
-            "        \"id\": \"6035db315b215d00075f90f1\",\n" +
-            "        \"other_info\": {\n" +
-            "            \"info\": [\n" +
-            "                {\n" +
-            "                    \"key\": \"company_name\",\n" +
-            "                    \"value\": \"DOCUMENT SERVER UAT\"\n" +
-            "                }\n" +
-            "            ]\n" +
-            "        },\n" +
-            "        \"request_token\": \"Rsq7k75FvGaErQgusTnh\",\n" +
-            "        \"signedinfo\": {\n" +
-            "            \"Status\": \"SUCCESS\",\n" +
-            "            \"description\": \"\",\n" +
-            "            \"signatureId\": \"MCEwFTETMBEGA1UEAwwKRVREQSBDQSBHMgIIUUNnAUVcNxk=\",\n" +
-            "            \"signedInfo\": \"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\",\n" +
-            "            \"signedInfoDigest\": \"\",\n" +
-            "            \"xadesSignedProperties\": \"\"\n" +
-            "        },\n" +
-            "        \"status\": \"reject\",\n" +
-            "        \"user_id\": \"P12TEST_james_finema\"\n" +
-            "    },\n" +
-            "    \"result\": \"accept\"\n" +
-            "}"
 
 
     val showLoading = ObservableBoolean()
@@ -300,50 +259,6 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
         }
     }
 
-    var mockSignSubmitSuccess = "{\n" +
-            "    \"description\": \"\",\n" +
-            "    \"document\": {\n" +
-            "        \"client_id\": \"docserver_18\",\n" +
-            "        \"dnList\": null,\n" +
-            "        \"document_category\": \"PDF\",\n" +
-            "        \"document_info\": {\n" +
-            "            \"business_type\": \"\",\n" +
-            "            \"document_description\": \"Documents waiting to be signed\",\n" +
-            "            \"document_name\": \"test\",\n" +
-            "            \"document_type\": \"application/pdf\",\n" +
-            "            \"ref_number\": \"187153\"\n" +
-            "        },\n" +
-            "        \"document_server_reject_at\": \"0001-01-01T00:00:00Z\",\n" +
-            "        \"hash_result\": {\n" +
-            "            \"description\": \"\",\n" +
-            "            \"digest_method\": 1,\n" +
-            "            \"document_hash\": \"J5Ydulsnl6DSAsxDYW/XLEHaHi9t3styrBN9khaXh5M=\",\n" +
-            "            \"result\": \"accept\",\n" +
-            "            \"xml_namespace\": \"\"\n" +
-            "        },\n" +
-            "        \"id\": \"6035db315b215d00075f90f1\",\n" +
-            "        \"other_info\": {\n" +
-            "            \"info\": [\n" +
-            "                {\n" +
-            "                    \"key\": \"company_name\",\n" +
-            "                    \"value\": \"DOCUMENT SERVER UAT\"\n" +
-            "                }\n" +
-            "            ]\n" +
-            "        },\n" +
-            "        \"request_token\": \"Rsq7k75FvGaErQgusTnh\",\n" +
-            "        \"signedinfo\": {\n" +
-            "            \"Status\": \"SUCCESS\",\n" +
-            "            \"description\": \"\",\n" +
-            "            \"signatureId\": \"MCEwFTETMBEGA1UEAwwKRVREQSBDQSBHMgIIUUNnAUVcNxk=\",\n" +
-            "            \"signedInfo\": \"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\",\n" +
-            "            \"signedInfoDigest\": \"\",\n" +
-            "            \"xadesSignedProperties\": \"\"\n" +
-            "        },\n" +
-            "        \"status\": \"reject\",\n" +
-            "        \"user_id\": \"P12TEST_james_finema\"\n" +
-            "    },\n" +
-            "    \"result\": \"accept\"\n" +
-            "}"
 
     fun signingSignInfoSubmit(urls: String, signature: String) {
         val data = urls.split(";")

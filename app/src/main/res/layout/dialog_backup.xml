@@ -16,7 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:padding="20dp">
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -28,7 +28,7 @@
                     android:text="Do you want to backup p12?"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/text_small"
                     android:textStyle="" />
 
 
@@ -36,6 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:layout_marginTop="20dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -45,23 +46,23 @@
                         android:id="@+id/btn_positive"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
+                        android:padding="20dp"
                         android:text="BACKUP"
-                        android:textSize="20sp"
-                        app:cornerRadius="10dp" />
+                        android:textSize="@dimen/text_small"
+                        app:cornerRadius="30dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_negative"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
+                        android:padding="20dp"
                         android:text="NO"
                         android:textColor="@color/blue"
                         app:strokeColor="@color/blue"
                         app:backgroundTint="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="@dimen/text_small"
                         app:strokeWidth="1dp"
-                        app:cornerRadius="10dp" />
+                        app:cornerRadius="30dp" />
 
 
                 </LinearLayout>

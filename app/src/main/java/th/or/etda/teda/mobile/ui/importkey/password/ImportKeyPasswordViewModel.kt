@@ -31,7 +31,7 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
 
     val caUri = MutableLiveData<Uri>()
     val password = MutableLiveData<String>()
-
+    var isSuccess = SingleLiveEvent<Boolean>()
     val showLoading = ObservableBoolean()
 
     fun addCertificate(certificate: Certificate) {
@@ -137,23 +137,7 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
 
     }
 
-    fun importTest(context: Context, password: String) {
-        try {
-            caUri.value?.let { it ->
-                val keyFile = context.contentResolver.openInputStream(it)
-                val p12 = KeyStore.getInstance("pkcs12")
-                p12.load(keyFile, password.toCharArray())
-                val e = p12.aliases()
-                while (e.hasMoreElements()) {
-                    val alias = e.nextElement() as String
-                    val c = p12.getCertificate(alias) as X509Certificate
-                    addCertificateToKeyStore(c)
-                }
-            }
 
-        } catch (e: Exception) {
-        }
-    }
 
     private fun addCertificateToKeyStore(c: X509Certificate) {
         try {
@@ -181,30 +165,6 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
     }
 
 
-    fun genKey(alias: String) {
-        val kpg: KeyPairGenerator = KeyPairGenerator.getInstance(
-            KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore"
-        )
-
-        kpg.initialize(
-            KeyGenParameterSpec.Builder(
-                alias,
-                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY
-            )
-                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                .setKeySize(1024)
-                .build()
-        )
-
-        val keyPair: KeyPair = kpg.generateKeyPair()
-
-        val keyStore = KeyStore.getInstance("AndroidKeyStore")
-        keyStore.load(null)
-        val entry = keyStore.getEntry(alias, null)
-        val privateKey = (entry as KeyStore.PrivateKeyEntry).privateKey
-        val publicKey = keyStore.getCertificate(alias).publicKey
-
-    }
 
     var uploadSuccess = MutableLiveData<Boolean>()
 
@@ -218,13 +178,19 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
         viewModelScope.launch {
             mDriveServiceHelper.createFolderIfNotExist(context.getString(R.string.app_name), null)
                 ?.addOnCompleteListener {
-                    var folderID = it.result.id
-                    mDriveServiceHelper.uploadFile(filePathBackup, "text/plain", folderID)
-                        ?.addOnCompleteListener {
-                            showLoading.set(false)
-                            uploadSuccess.value = true
-                            Log.i("upload", "success")
-                        }
+                    if(it.isSuccessful){
+                        var folderID = it.result.id
+                        mDriveServiceHelper.uploadFile(filePathBackup, "text/plain", folderID)
+                            ?.addOnCompleteListener {
+                                showLoading.set(false)
+                                uploadSuccess.value = true
+                                Log.i("upload", "success")
+                            }
+                        isSuccess.value = true
+                    }else{
+                        isSuccess.value = false
+                    }
+
                 }
         }
     }

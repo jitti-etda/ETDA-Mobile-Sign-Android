@@ -12,12 +12,14 @@ data class Certificate(
     @PrimaryKey
     @ColumnInfo(name = "cert_name") var certName: String,
     @ColumnInfo(name = "cert_ca") var certCa: String?,
-    @ColumnInfo(name = "cert_chains") var certChains: String?
+    @ColumnInfo(name = "cert_chains") var certChains: String?,
+    @ColumnInfo(name = "date") var date: String?
 ): Parcelable {
 
     @Ignore
     constructor(parcel: Parcel) : this(
         parcel.readString()!!,
+        parcel.readString(),
         parcel.readString(),
         parcel.readString()
     )
@@ -26,6 +28,7 @@ data class Certificate(
         parcel.writeString(certName)
         parcel.writeString(certCa)
         parcel.writeString(certChains)
+        parcel.writeString(date)
     }
 
     override fun describeContents(): Int {

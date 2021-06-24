@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.Observer
@@ -81,6 +82,24 @@ class CertListFragment : BaseFragment<CertListFragmentBinding>(
                 })
         )
 
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // Do custom work here
+
+                    // if you want onBackPressed() to be called as normal afterwards
+                    if (isEnabled) {
+                        isEnabled = false
+                        setFragmentResult(
+                            REQUEST_KEY,
+                            bundleOf("cert" to null)
+                        )
+                        findNavController().navigateUp()
+                    }
+                }
+            }
+            )
     }
 
 
@@ -122,6 +141,8 @@ class CertListFragment : BaseFragment<CertListFragmentBinding>(
 //        })
 
     }
+
+
 
 
     private fun alertBox(message: String) {

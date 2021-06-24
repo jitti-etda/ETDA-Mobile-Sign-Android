@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
 
         <variable
@@ -22,8 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:orientation="vertical"
-           >
+            android:orientation="vertical">
             <!--                <EditText-->
             <!--                    android:id="@+id/editText"-->
             <!--                    android:layout_width="wrap_content"-->
@@ -36,9 +36,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:visibility="gone"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/cert_list"
@@ -62,8 +62,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/sign"
@@ -89,9 +89,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/verify"
@@ -115,9 +115,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/qr_reader"
@@ -139,15 +139,16 @@
             </LinearLayout>
 
 
-            <include layout="@layout/actionbar_custom" android:id="@+id/action_bar"/>
+            <include
+                android:id="@+id/action_bar"
+                layout="@layout/actionbar_custom" />
 
 
             <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
                 android:id="@+id/previewView"
-                />
+                android:layout_width="match_parent"
+
+                android:layout_height="match_parent" />
 
 
         </LinearLayout>
@@ -157,21 +158,21 @@
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
-            android:visibility="@{viewModel.showLoading ? View.VISIBLE : View.GONE}"
-
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+
+            android:layout_gravity="center"
+            android:visibility="@{viewModel.showLoading ? View.VISIBLE : View.GONE}" />
 
 
         <TextView
             android:id="@+id/error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.showError}"
-
             android:layout_gravity="center"
-            android:visibility="@{viewModel.showError == null ? View.GONE : View.VISIBLE}"
-         />
+            android:text="@{viewModel.showError}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_small"
+            android:visibility="@{viewModel.showError == null ? View.GONE : View.VISIBLE}" />
 
     </FrameLayout>
 

@@ -54,7 +54,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
         adapterCert = CertAdapter()
 
-        getCertAll()
+
 
         viewBinding.apply {
 
@@ -104,6 +104,11 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
             )
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getCertAll()
     }
 
 //    fun readDate(key: String) {
@@ -156,16 +161,21 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
     }
 
     fun getCertAll() {
-        adapterCert.currentList.clear()
+        try {
+            adapterCert.currentList.clear()
+        } catch (e: Exception) {
+
+        }
+
         viewModel.getCertificateAll().observe(viewLifecycleOwner, Observer {
 
             adapterCert.submitList(it)
-            if(adapterCert.currentList.isEmpty()){
-                viewBinding.layoutFirst.visibility =  View.VISIBLE
-                viewBinding.layoutMenu.visibility =  View.GONE
-            }else{
-                viewBinding.layoutFirst.visibility =  View.GONE
-                viewBinding.layoutMenu.visibility =  View.VISIBLE
+            if (adapterCert.currentList.isEmpty()) {
+                viewBinding.layoutFirst.visibility = View.VISIBLE
+                viewBinding.layoutMenu.visibility = View.GONE
+            } else {
+                viewBinding.layoutFirst.visibility = View.GONE
+                viewBinding.layoutMenu.visibility = View.VISIBLE
             }
 //            var ac = activity as MainActivity
 //            ac.checkMenu()

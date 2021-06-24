@@ -31,7 +31,7 @@ class MainActivity2 : BaseActivity<ActivityMain2Binding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        BiometricEncryptedSharedPreferences.checkBio(this)
     }
 
     override fun getLayoutId(): Int {

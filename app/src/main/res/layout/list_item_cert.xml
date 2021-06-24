@@ -42,7 +42,7 @@
             android:text="@{cert.certName}"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_small"
             tools:text="Cert" />
 
         <LinearLayout
@@ -57,16 +57,16 @@
                 android:ems="5"
                 android:text="Last update:"
                 android:textColor="@color/grey"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_micro"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/cert_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="12/12/2021"
+                android:text="@{cert.date}"
                 android:textColor="@color/grey"
-                android:textSize="16sp" />
+                android:textSize="@dimen/text_micro" />
         </LinearLayout>
 
         <View

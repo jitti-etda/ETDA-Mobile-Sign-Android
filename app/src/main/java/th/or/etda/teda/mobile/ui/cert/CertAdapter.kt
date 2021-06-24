@@ -55,7 +55,8 @@ class CertAdapter : ListAdapter<Certificate, RecyclerView.ViewHolder>(CertDiffCa
         (holder as CertViewHolder).bind(cert)
     }
 
-    class CertViewHolder(private val binding: ListItemCertBinding) : RecyclerView.ViewHolder(binding.root) {
+    class CertViewHolder(private val binding: ListItemCertBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
 //            binding.setClickListener {
 //                binding.cert?.let { plant ->
@@ -85,12 +86,10 @@ class CertAdapter : ListAdapter<Certificate, RecyclerView.ViewHolder>(CertDiffCa
 //                certTitle.setText(item.certName)
                 cert = item
                 executePendingBindings()
-
+                certTitle.setText(item.certName.split("_")[0])
             }
         }
     }
-
-
 
 
 }

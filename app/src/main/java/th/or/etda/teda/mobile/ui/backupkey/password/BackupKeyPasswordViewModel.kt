@@ -19,13 +19,7 @@ class BackupKeyPasswordViewModel(var repository: CertificateRepository) : ViewMo
 
 
     var certLiveData = MutableLiveData<List<Certificate>>()
-    fun getCertificateAll(): MutableLiveData<List<Certificate>> {
 
-        viewModelScope.launch {
-            certLiveData.value = repository.getCertAll()
-        }
-        return certLiveData
-    }
 
 
     fun encryptP12forBackup(context: Context, password: CharArray, file: File) {

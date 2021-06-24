@@ -25,20 +25,7 @@ class BackupKeyViewModel (var repository: CertificateRepository): ViewModel() {
     var showError = SingleLiveEvent<String>()
 
     var certLiveData = MutableLiveData<List<Certificate>>()
-    fun getCertificateAll(): MutableLiveData<List<Certificate>> {
 
-        viewModelScope.launch {
-            var res = repository.getCertAll()
-            certLiveData.value = res
-            if(res.isEmpty()){
-                showError.value  = "Not found"
-            }else{
-                showError.value  = ""
-            }
-
-        }
-        return certLiveData
-    }
 
 
 

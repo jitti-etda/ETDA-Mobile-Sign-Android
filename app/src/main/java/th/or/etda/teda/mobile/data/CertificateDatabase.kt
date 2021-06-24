@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [Certificate::class], version = 11, exportSchema = false)
+@Database(entities = [Certificate::class], version = 12, exportSchema = false)
 public abstract class CertificateDatabase: RoomDatabase() {
     abstract fun certificateDao(): CertificateDao
 
@@ -30,15 +30,6 @@ public abstract class CertificateDatabase: RoomDatabase() {
         }
 
 
-        fun buildDatabase(context: Context): CertificateDatabase {
-            // if the INSTANCE is not null, then return it,
-            // if it is, then create the database
-            return Room.databaseBuilder(
-                context,
-                CertificateDatabase::class.java,
-                "certificate-database"
-            ).build()
-        }
     }
 
 }

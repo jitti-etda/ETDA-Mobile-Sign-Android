@@ -19,6 +19,7 @@ import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.RestoreImportKeyPasswordFragmentBinding
+import th.or.etda.teda.mobile.model.ExtrackP12
 import th.or.etda.teda.mobile.ui.home.HomeViewModel
 import th.or.etda.teda.mobile.ui.importkey.password.ImportKeyPasswordFragmentDirections
 import th.or.etda.teda.mobile.ui.restorekey.password.RestoreKeyPasswordFragment
@@ -52,7 +53,16 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
 
                 var password = edtPassword.text.toString()
                 var name = edtName.text.toString()
-                if (password.isNotEmpty() && name.isNotEmpty()) {
+
+                if (name.trim().isEmpty()) {
+                    alertInput()
+                    return@setOnClickListener
+                }
+                if (password.isEmpty()) {
+                    alertInput()
+                    return@setOnClickListener
+                }
+                if (password.isNotEmpty() && name.trim().isNotEmpty()) {
                     if (dataDecrypt != null) {
                         restore(dataDecrypt, password, name)
                     }
@@ -88,9 +98,9 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
 
     }
 
-    fun saveData(key: String, privateKey: PrivateKey) {
+    fun saveData(key: String, extrackP12: ExtrackP12) {
         var name = key + "_" + UtilApps.timestampName()
-        val privKeyBytes: ByteArray? = privateKey?.encoded
+        val privKeyBytes: ByteArray? = extrackP12.privateKey?.encoded
         val privKeyStr = String(Base64.encode(privKeyBytes, 2))
 //
 //        val editor = sharedPreferences.edit()
@@ -109,7 +119,14 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
         ).observe(this, Observer { it: SharedPreferences? ->
             if (it != null) {
                 it.edit().putString(name, privKeyStr).apply()
-                viewModel.addCertificate(Certificate(name, "", ""))
+                viewModel.addCertificate(
+                    Certificate(
+                        name,
+                        extrackP12.cert,
+                        extrackP12.chains,
+                        UtilApps.currentDate()
+                    )
+                )
                 alertComplete("Restore complete")
             }
 
@@ -142,8 +159,12 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_restore_success)
-        dialog.getWindow()?.setBackgroundDrawable( ColorDrawable(getResources().getColor(R.color.transparent)));
-        dialog.getWindow()?.setLayout(((UtilApps.getScreenWidth(getActivity()) * .9).toInt()), ViewGroup.LayoutParams.WRAP_CONTENT );
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
 
         dialog.setCancelable(false)
 
@@ -154,6 +175,29 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
             val action =
                 RestoreImportKeyPasswordFragmentDirections.nextActionToFirst()
             findNavController().navigate(action)
+        }
+
+        dialog.show()
+    }
+
+    private fun alertInput() {
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()

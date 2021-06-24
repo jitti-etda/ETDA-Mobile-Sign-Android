@@ -8,6 +8,8 @@ import android.graphics.Point;
 import android.icu.text.SimpleDateFormat;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.api.client.util.DateTime;
+
 import java.util.Date;
 import java.util.Locale;
 
@@ -62,6 +64,13 @@ public class UtilApps {
     public static String timestampName() {
         String currentDate = new SimpleDateFormat("ddMMyyyyHHmmss", Locale.getDefault()).format(new Date());
         return currentDate;
+    }
+
+    public static String dateConvert(DateTime date) {
+//        java.text.SimpleDateFormat sdf2 = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.zzzZ");
+
+        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm");
+        return formatter.format(date.getValue());
     }
 
     public static void hideSoftKeyboard(Activity activity) {

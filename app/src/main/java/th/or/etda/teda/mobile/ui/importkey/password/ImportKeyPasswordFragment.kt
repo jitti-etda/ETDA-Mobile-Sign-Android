@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.widget.TextView
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
@@ -26,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputLayout
 import com.google.api.services.drive.DriveScopes
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -63,12 +65,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
     private var mDriveServiceHelper: DriveServiceHelper? = null
 
     private val viewModel: ImportKeyPasswordViewModel by viewModel()
-//    val backupViewModel: BackupKeyPasswordViewModel by viewModel()
-//    private val viewModel: ExtractCAViewModel by viewModels {
-//        ExtractCaViewModelFactory((requireActivity().application as TEDAMobileApplication).repository)
-//    }
-
-//    private val viewModel: ExtractCAViewModel by viewModels()
 
     var filePath = ""
     var filePathBackup: File? = null
@@ -90,7 +86,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         filePath = arguments?.let {
             ImportKeyPasswordFragmentArgs.fromBundle(it).file
         }.toString()
-
 
 
 
@@ -130,9 +125,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         setFragmentResultListener(BackupKeyPasswordFragment.REQUEST_KEY) { key, bundle ->
             // read from the bundle
             var passwordBackup = bundle.getString("password")
-//            val password = viewBinding.passwordText.text.toString()
-//        val password2 = viewBinding.passwordEncrypt.text.toString()
-//            val name = viewBinding.nameCert.text.toString()
             var file = File(filePath)
             passwordBackup?.let { backup(requireContext(), it, file) }
         }
@@ -140,120 +132,12 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
 
         ImportHelper.fileLiveData.observe(viewLifecycleOwner, Observer {
             filePathBackup = it
-            Log.i("filePath", filePathBackup.toString())
-
             uploadFile()
         })
 
 
-//        cryptographyManager = CryptographyManager()
-//        // e.g. secretKeyName = "biometric_sample_encryption_key"
-//        biometricPrompt = createBiometricPrompt()
-//        promptInfo = createPromptInfo()
-//        authenticateToEncrypt()
-
-
     }
 
-
-//    fun importP12() {
-//        val password = viewBinding.passwordText.text.toString()
-////        val password2 = viewBinding.passwordEncrypt.text.toString()
-//        val name = viewBinding.nameCert.text.toString()
-//        if (password.isNotEmpty() && name.isNotEmpty()) {
-//            alertBackup()
-//        }
-//    }
-
-//    private lateinit var biometricPrompt: BiometricPrompt
-//    private lateinit var promptInfo: BiometricPrompt.PromptInfo
-//    private var readyToEncrypt: Boolean = false
-//    private lateinit var cryptographyManager: CryptographyManager
-//    private lateinit var ciphertext: ByteArray
-//    private lateinit var initializationVector: ByteArray
-//    var privateEncrypt = ""
-//
-//    private fun createBiometricPrompt(): BiometricPrompt {
-//        val executor = ContextCompat.getMainExecutor(requireContext())
-//
-//        val callback = object : BiometricPrompt.AuthenticationCallback() {
-//            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-//                super.onAuthenticationError(errorCode, errString)
-//                Log.d("TAG", "$errorCode :: $errString")
-//            }
-//
-//            override fun onAuthenticationFailed() {
-//                super.onAuthenticationFailed()
-//                Log.d("TAG", "Authentication failed for an unknown reason")
-//            }
-//
-//            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-//                super.onAuthenticationSucceeded(result)
-//                Log.d("TAG", "Authentication was successful")
-//                processData(result.cryptoObject)
-//            }
-//        }
-//
-//        //The API requires the client/Activity context for displaying the prompt view
-//        val biometricPrompt = BiometricPrompt(this, executor, callback)
-//        return biometricPrompt
-//    }
-//
-//    private fun createPromptInfo(): BiometricPrompt.PromptInfo {
-//        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-//            .setTitle("Please Sign Signature")
-//            .setSubtitle("Teda Mobile")
-//            .setNegativeButtonText("Cancel")
-//            // .setDeviceCredentialAllowed(true) // Allow PIN/pattern/password authentication.
-//            // Also note that setDeviceCredentialAllowed and setNegativeButtonText are
-//            // incompatible so that if you uncomment one you must comment out the other
-//            .build()
-//        return promptInfo
-//    }
-
-
-//    private fun authenticateToEncrypt() {
-//        readyToEncrypt = true
-//        if (BiometricManager.from(requireContext())
-//                .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL) == BiometricManager
-//                .BIOMETRIC_SUCCESS
-//        ) {
-//            val cipher = cryptographyManager.getInitializedCipherForEncryption(HomeViewModel.ALIAS)
-//            biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
-//        }
-//    }
-
-//    private fun authenticateToDecrypt() {
-//        readyToEncrypt = false
-//        if (BiometricManager.from(requireContext()).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL) == BiometricManager
-//                .BIOMETRIC_SUCCESS) {
-//            val cipher = cryptographyManager.getInitializedCipherForDecryption(HomeViewModel.ALIAS,initializationVector)
-//            biometricPrompt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
-//        }
-//
-//    }
-
-//    private fun processData(cryptoObject: BiometricPrompt.CryptoObject?) {
-//        val data = if (readyToEncrypt) {
-//            val encryptedData = privateKey?.encoded?.let {
-//                cryptographyManager.encryptData(
-//                    it,
-//                    cryptoObject?.cipher!!
-//                )
-//            }
-//            ciphertext = encryptedData?.ciphertext!!
-//            initializationVector = encryptedData.initializationVector
-//
-//            String(ciphertext, Charset.forName("UTF-8"))
-//        } else {
-//            cryptographyManager.decryptData(ciphertext, cryptoObject?.cipher!!)
-//        }
-//        privateEncrypt = data
-////        Log.i("asd", privateEncrypt)
-//        val name = viewBinding.nameCert.text.toString()
-////        saveData(name, privateEncrypt)
-//
-//    }
 
     fun initActionBar() {
         viewBinding.actionBar.tvTitle.setText("Import P12 password")
@@ -266,43 +150,8 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
     fun saveData(name: String, extrackP12: ExtrackP12) {
 
         nameTimestamp = name
-//        val masterKey = MasterKey.Builder(requireContext())
-//            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-//            .build()
-//
-//        val sharedPreferences = EncryptedSharedPreferences.create(
-//            requireContext(),
-//            HomeViewModel.ALIAS,
-//            masterKey,
-//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//        )
         val privKeyBytes: ByteArray? = extrackP12.privateKey?.encoded
         val privKeyStr = String(Base64.encode(privKeyBytes, Base64.NO_WRAP))
-//
-//        val editor = sharedPreferences.edit()
-//        editor.putString(name, privKeyStr)
-//        editor.apply()
-
-
-//        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-//
-//        val sharedPreferences = EncryptedSharedPreferences.create(
-//            "secret_shared_prefs",
-//            masterKeyAlias,
-//            requireContext(),
-//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//        )
-//
-//        // use the shared preferences and editor as you normally would
-//
-//        // use the shared preferences and editor as you normally would
-//        val editor = sharedPreferences.edit()
-//        editor.putString(name, value)
-//        editor.apply()
-//        viewModel.addCertificate(Certificate(name, "", ""))
-
 
         BiometricEncryptedSharedPreferences.create(
             this,
@@ -316,7 +165,14 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
             if (it != null) {
                 it.edit().putString(name, privKeyStr).apply()
 
-                viewModel.addCertificate(Certificate(name, extrackP12.cert, extrackP12.chains))
+                viewModel.addCertificate(
+                    Certificate(
+                        name,
+                        extrackP12.cert,
+                        extrackP12.chains,
+                        UtilApps.currentDate()
+                    )
+                )
 
 
                 alertBackupDialog()
@@ -325,74 +181,30 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         })
 
 
-//            .setTitle("Please Sign Signature")
-//            .setSubtitle("Teda Mobile")
-//            .setNegativeButtonText("Cancel")
-
-
     }
 
-    //    var privateKey: PrivateKey? = null
     private fun submit() {
 
         val password = viewBinding.edtPassword.text.toString()
-//        val password2 = viewBinding.passwordEncrypt.text.toString()
         val name = viewBinding.edtName.text.toString()
-
-        if (password.isNotEmpty() && name.isNotEmpty()) {
+        if (name.trim().isEmpty()) {
+            alertInput()
+            return
+        }
+        if (password.isEmpty()) {
+            alertInput()
+            return
+        }
+        if (password.isNotEmpty() && name.trim().isNotEmpty()) {
             var nameTime = name + "_" + UtilApps.timestampName()
-//            extrack(password, name)
             viewModel.extractP12Success.observe(viewLifecycleOwner, Observer {
-
-//                privateKey = it
-//                authenticateToEncrypt()
                 saveData(nameTime, it)
             })
             var file = File(filePath)
             viewModel.caUri.value = Uri.fromFile(file)
-            viewModel.extractP12(requireContext(), password,nameTime)
+            viewModel.extractP12(requireContext(), password, nameTime)
 
         }
-    }
-
-
-    fun extrack(password: String, name: String) {
-        var file = File(filePath)
-        viewModel.caUri.value = Uri.fromFile(file)
-//            backupViewModel.encryptP12(requireContext(),password,file)
-//            viewModel.importTest(requireContext(),password2)
-        viewModel.extractSuccess.observe(viewLifecycleOwner, Observer {
-            if (it != null && it.isNotEmpty()) {
-                nameTimestamp = it
-
-
-//                var dia = Dialog(requireContext())
-//                dia.setContentView(R.layout.dialog_alert)
-//                var title = dia.findViewById<TextView>(R.id.tv_title)
-//                title.setText("Do you want to backup p12?")
-//                var btnPositive = dia.findViewById<Button>(R.id.btn_positive)
-//                var btnNegative = dia.findViewById<Button>(R.id.btn_negative)
-//
-//                btnPositive.setText("Backup")
-//                btnPositive.setOnClickListener {
-//                    dia.dismiss()
-//                    authenGoogleDrive()
-//                }
-//                btnNegative.setText("No")
-//                btnNegative.setOnClickListener {
-//                    dia.dismiss()
-//                    alertBox("IMPORT SUCCESSFUL")
-//                }
-//                dia.show()
-
-                alertBackupDialog()
-
-
-            } else {
-                UtilApps.alertDialog(requireCompatActivity(), "Wrong password or corrupted file")
-            }
-        })
-        viewModel.extractCA(requireActivity(), password, name)
     }
 
 
@@ -402,25 +214,17 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
     }
 
 
-    private fun alertBox(message: String) {
+    private fun alertBox() {
         UtilApps.hideSoftKeyboard(requireCompatActivity())
-//        AlertDialog.Builder(requireCompatActivity())
-//            .setMessage(message)
-//            .setCancelable(false)
-//            .setPositiveButton(
-//                "Close"
-//            ) { dialog, which ->
-//                dialog.cancel()
-//                val action =
-//                    ImportKeyPasswordFragmentDirections.actionToFirst()
-//                findNavController().navigate(action)
-//            }.show()
-
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_import_success)
-        dialog.getWindow()?.setBackgroundDrawable( ColorDrawable(getResources().getColor(R.color.transparent)));
-        dialog.getWindow()?.setLayout(((UtilApps.getScreenWidth(getActivity()) * .9).toInt()), ViewGroup.LayoutParams.WRAP_CONTENT );
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
 
         dialog.setCancelable(false)
 
@@ -437,23 +241,11 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
     }
 
     private fun alertBackupDialog() {
-//        AlertDialog.Builder(requireCompatActivity())
-//            .setMessage("Do you want to backup p12?")
-//            .setPositiveButton("Backup") { dialog, which ->
-//                dialog.dismiss()
-//                dialog.cancel()
-//
-//                authenGoogleDrive()
-//
-//            }.setNegativeButton("No") { dialog, which ->
-//                dialog.cancel()
-//                alertBox("IMPORT SUCCESSFUL")
-//            }.show()
-
 
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.getWindow()?.setBackgroundDrawable( ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
         val window: Window? = dialog.getWindow()
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         dialog.setCancelable(false)
@@ -467,7 +259,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         }
         noBtn.setOnClickListener {
             dialog.dismiss()
-            alertBox("IMPORT SUCCESSFUL")
+            alertBox()
         }
         dialog.show()
     }
@@ -478,7 +270,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         if (account == null) {
             signIn()
         } else {
-//            viewBinding.email.setText(account.email)
             mDriveServiceHelper =
                 DriveServiceHelper(
                     DriveServiceHelper.getGoogleDriveService(
@@ -486,9 +277,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
                         account, DriveServiceHelper.DRIVE_APP_NAME
                     )
                 )
-//            viewBinding.createTextFile.setOnClickListener {
-//                mDriveServiceHelper?.createFile("Test TEDA")
-//            }
 
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
             val googleSignInClient = GoogleSignIn.getClient(requireCompatActivity(), gso)
@@ -496,10 +284,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
                 signIn()
             }
 
-
-//            val action =
-//                ImportKeyPasswordFragmentDirections.nextActionBackupPassword()
-//            findNavController().navigate(action)
 
         }
     }
@@ -516,11 +300,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
             )
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireCompatActivity(), gso)
-//        mGoogleSignInClient = buildGoogleSignInClient();
-//        startActivityForResult(mGoogleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-
-
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         val signInIntent: Intent? = mGoogleSignInClient?.signInIntent
         startActivityForResult(signInIntent, REQUEST_CODE_SIGN_IN)
     }
@@ -555,16 +334,6 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
     }
 
     fun uploadFile() {
-//       mDriveServiceHelper?.createFolderIfNotExist(getString(R.string.app_name),null)?.addOnCompleteListener {
-//           var folderID = it.result.id
-//           mDriveServiceHelper?.uploadFile(filePathBackup, "text/plain", folderID)?.addOnCompleteListener {
-//               alertBox("IMPORT SUCCESSFUL")
-//           }
-//       }
-//        viewModel.uploadFile(
-//            requireContext(), mDriveServiceHelper!!,
-//            filePathBackup!!
-//        )
         viewBinding.progressBar2.visibility = View.VISIBLE
         mDriveServiceHelper?.let {
             filePathBackup?.let { it1 ->
@@ -576,10 +345,14 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         }
         viewModel.uploadSuccess.observe(viewLifecycleOwner, Observer {
             viewBinding.progressBar2.visibility = View.GONE
-            alertBox("IMPORT SUCCESSFUL")
+            alertBox()
 
         })
-
+        viewModel.isSuccess.observe(viewLifecycleOwner, Observer {
+            if (!it) {
+                alertLogin()
+            }
+        })
     }
 
 
@@ -598,5 +371,54 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         }
     }
 
+    private fun alertInput() {
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun alertLogin() {
+
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+        val tvTitle = dialog.findViewById<TextView>(R.id.tv_title)
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+
+        tvTitle.setText(getString(R.string.alert_google_drive))
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+            authenGoogleDrive()
+        }
+
+
+        dialog.show()
+    }
 
 }
