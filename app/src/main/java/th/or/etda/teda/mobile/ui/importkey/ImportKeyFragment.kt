@@ -1,19 +1,16 @@
 package th.or.etda.teda.mobile.ui.importkey
 
-import android.database.Cursor
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import org.koin.android.viewmodel.ext.android.viewModel
-import th.or.etda.teda.mobile.MainActivity
-import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
+import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.databinding.ImportKeyFragmentBinding
 import th.or.etda.teda.mobile.ui.cert.CertAdapter
+import th.or.etda.teda.mobile.ui.cert.CertListViewModel
 import th.or.etda.teda.ui.base.BaseFragment
 
 
@@ -22,14 +19,12 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 ) {
 
 
-    val viewModel: ImportKeyViewModel by viewModel()
+    val viewModel: CertListViewModel by viewModel()
 
-    //    var isChangePage = false
     private lateinit var adapterCert: CertAdapter
 
     override fun onInitDataBinding() {
 
-//        if(!isChangePage){
         val data = requireActivity().intent.data
         if (data != null) {
             requireActivity().contentResolver.openInputStream(data)?.let {
@@ -38,12 +33,9 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                     it
                 )
 
-//                   var file = data.toFile()
                 val action =
                     ImportKeyFragmentDirections.nextActionImportPassword(fileDownload.path, false)
                 findNavController().navigate(action)
-//                isChangePage = true
-//            }
                 requireActivity().intent.replaceExtras(Bundle())
                 requireActivity().intent.action = ""
                 requireActivity().intent.data = null
@@ -57,6 +49,14 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
 
         viewBinding.apply {
+
+            if (!BiometricEncryptedSharedPreferences.checkBio(requireCompatActivity())) {
+                btnImportKey.isEnabled = false
+                btnImportMenu.isEnabled = false
+                btnRestoreKey.isEnabled = false
+                btnRestoreMenu.isEnabled = false
+                btnSign.isEnabled = false
+            }
 
             btnImportKey.setOnClickListener {
                 val action =
@@ -109,56 +109,15 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
     override fun onResume() {
         super.onResume()
         getCertAll()
-    }
 
-//    fun readDate(key: String) {
-////        val masterKey = MasterKey.Builder(requireContext())
-////            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-////            .build()
-////
-////        val sharedPreferences = EncryptedSharedPreferences.create(
-////            requireContext(),
-////            HomeViewModel.ALIAS,
-////            masterKey,
-////            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-////            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-////        )
-////        sharedPreferences.getString(key, "")?.let { Log.i("read", it) }
-//        BiometricEncryptedSharedPreferences.create(
-//            this,
-//            HomeViewModel.FileName,
-//            1,
-//            BiometricPrompt.PromptInfo.Builder().setTitle(getString(R.string.app_name)).setNegativeButtonText("Cancel").setAllowedAuthenticators(
-//                BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
-//            ).build()
-//        ).observe(this, Observer { it: SharedPreferences ->
-//           var data= it.getString(key, "")
-//            println(data)
-//        })
-//    }
+
+    }
 
     override fun onInitDependencyInjection() {
 
 
     }
 
-    fun getPath(uri: Uri?): String? {
-        var result: String? = null
-        val proj = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor: Cursor? =
-            uri?.let { requireContext().contentResolver.query(it, proj, null, null, null) }
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                val column_index: Int = cursor.getColumnIndexOrThrow(proj[0])
-                result = cursor.getString(column_index)
-            }
-            cursor.close()
-        }
-        if (result == null) {
-            result = "Not found"
-        }
-        return result
-    }
 
     fun getCertAll() {
         try {
@@ -177,15 +136,6 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                 viewBinding.layoutFirst.visibility = View.GONE
                 viewBinding.layoutMenu.visibility = View.VISIBLE
             }
-//            var ac = activity as MainActivity
-//            ac.checkMenu()
-//            if(it.isEmpty()){
-//                viewBinding.recyclerView.visibility = View.GONE
-//                viewBinding.layoutImport.visibility = View.VISIBLE
-//            }else{
-//                viewBinding.recyclerView.visibility = View.VISIBLE
-//                viewBinding.layoutImport.visibility = View.GONE
-//            }
 
 
         })

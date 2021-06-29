@@ -1,5 +1,6 @@
 package th.or.etda.teda.mobile.ui.importkey.directory
 
+import android.os.Environment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,20 +23,16 @@ class DirectoryViewModel : ViewModel() {
             }
             fileListLive.postValue(fileList)
         }
-//        fileListLive.value = fileList
-//        return fileList
     }
 
     private fun getFileLocal(dir: File) {
         val listFile = dir.listFiles()
         if (listFile != null && listFile.isNotEmpty()) {
             for (file in listFile) {
-//                Log.i("file", file.name)
                 if (file.isDirectory) {
                     getFileLocal(file)
                 } else {
-                    if (file.name.endsWith(".p12")
-                    ) {
+                    if (file.name.endsWith(".p12") || file.name.endsWith(".pfx")) {
                         val temp = Directory(
                             file.name,
                             file.absolutePath
@@ -53,29 +50,6 @@ class DirectoryViewModel : ViewModel() {
 
     }
 
-    fun getFileBackup(dir: File): ArrayList<Directory> {
-        viewModelScope.launch {
-
-            val listFile = dir.listFiles()
-
-            if (listFile != null && listFile.isNotEmpty()) {
-                for (file in listFile) {
-//                Log.i("file", file.name)
-                    if (file.isDirectory) {
-                        getFileBackup(file)
-                    } else {
-                        val temp = Directory(
-                            file.name,
-                            file.absolutePath
-                        )
-
-                        if (!fileList.contains(temp)) fileList.add(temp)
-                    }
-                }
-            }
-        }
-        return fileList
-    }
 
     private val EXTERNAL_STORAGE_DIRECTORY = getDirectory("EXTERNAL_STORAGE", "/sdcard")
 
@@ -83,6 +57,7 @@ class DirectoryViewModel : ViewModel() {
         val path = System.getenv(variableName)
         return if (path == null) File(defaultPath) else File(path)
     }
+
 
     fun getExternalStorageDirectory(): File? {
         return EXTERNAL_STORAGE_DIRECTORY

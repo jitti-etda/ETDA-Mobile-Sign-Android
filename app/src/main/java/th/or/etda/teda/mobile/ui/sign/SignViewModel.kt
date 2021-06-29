@@ -29,133 +29,38 @@ import java.util.concurrent.ExecutionException
 class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 
     companion object {
-        //        const val SIGN_ALGORITHM = "MD5WithRSA"
         const val SIGN_ALGORITHM = "SHA256withRSA"
-        const val ANDROID_KEY_STORE = "AndroidKeyStore"
-//        const val ANDROID_KEY_STORE = "AndroidCAStore"
 
-//        const val ANDROID_KEY_STORE = "pkcs12"
-
-        const val ALIAS = "TEDA_KEY"
-        private const val TAG = "HomeViewModel"
+        private const val TAG = "SignViewModel"
     }
 
-    //    private var app: Application? = null
-    private lateinit var privateKey: PrivateKey
-    private lateinit var publicKey: PublicKey
-    private val message: String = "Message"
     private lateinit var signMessage: String
-    private lateinit var signWithKeyStore: String
 
     private var cameraProviderLiveData: MutableLiveData<ProcessCameraProvider>? = null
-
-//    val signedInfo = MutableLiveData<SignedInfo?>()
-//    val signedInfoSubmit = MutableLiveData<SignedInfo>()
 
     val signedInfo = SingleLiveEvent<SignedInfo>()
     val signedInfoSubmit = SingleLiveEvent<SignedInfo>()
 
-    val signedInfoError = SingleLiveEvent<DataResponse>()
     val signedInfoSubmitError = SingleLiveEvent<DataResponse>()
 
 
-    fun signWithKeyStore(sign: String, cert: Certificate): String {
-        var signInfo = Base64.decode(sign, Base64.NO_WRAP)
-
-        val keyStore = KeyStore.getInstance(ANDROID_KEY_STORE)
-//        val keyStore = KeyStore.getInstance(KeyStore.getDefaultType())
-        keyStore.load(null)
-        val pvKey = keyStore.getKey(cert.certName, null) as PrivateKey
-
-//        var pv = cert.pvk?.let { RSACrypt2.decryptAES(it) }
-//
-//
-//        val keySpec = PKCS8EncodedKeySpec(pv)
-//        val kf = KeyFactory.getInstance("RSA")
-//        val privKey = kf.generatePrivate(keySpec)
-//
-//        println("KEY == >$privKey")
-        val signature = Signature.getInstance(SIGN_ALGORITHM)
-        signature.initSign(pvKey)
-        signature.update(signInfo)
-        val encodeSign = Base64.encodeToString(signature.sign(), Base64.NO_WRAP)
-//        val signed = String(signature.sign(), Charsets.UTF_8)
-        signMessage = encodeSign
-        Log.i("signMessage",signMessage)
-        return signMessage
-    }
-
-//    var testXml = "PGRzOlNpZ25lZEluZm8geG1sbnM6Y2N0cz0idXJuOnVuOnVuZWNlOnVuY2VmYWN0OmRvY3VtZW50YXRpb246c3RhbmRhcmQ6Q29yZUNvbXBvbmVudHNUZWNobmljYWxTcGVjaWZpY2F0aW9uOjIiIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiB4bWxuczpxdD0idXJuOmV0ZGE6dGVkYTpkYXRhOlF1YWxpZmllZERhdGFUeXBlOjEiIHhtbG5zOnRjPSJ1cm46ZXRkYTp0ZWRhOmRvY3VtZW50YXRpb246VHJhbnNjcmlwdDoxIiB4bWxuczp1ZHQ9InVybjp1bjp1bmVjZTp1bmNlZmFjdDpkYXRhOnN0YW5kYXJkOlVucXVhbGlmaWVkRGF0YVR5cGU6MTYiIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvVFIvMjAwMS9SRUMteG1sLWMxNG4tMjAwMTAzMTUiPjwvZHM6Q2Fub25pY2FsaXphdGlvbk1ldGhvZD48ZHM6U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjcnNhLXNoYTI1NiI+PC9kczpTaWduYXR1cmVNZXRob2Q+PGRzOlJlZmVyZW5jZSBJZD0ieG1sZHNpZy1lNDQ0NmZjYS0xZDY0LTQzODctYWUyOC1hNTI3NDY4Y2EzMGEtcmVmMCIgVVJJPSIiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjZW52ZWxvcGVkLXNpZ25hdHVyZSI+PC9kczpUcmFuc2Zvcm0+PC9kczpUcmFuc2Zvcm1zPjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiPjwvZHM6RGlnZXN0TWV0aG9kPjxkczpEaWdlc3RWYWx1ZT52aVlEbGtuNjFVV0g0dS9YM3VEOGdvTGtXSVNmWEhUZ0dieHFDdGQzK0tJPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PGRzOlJlZmVyZW5jZSBUeXBlPSJodHRwOi8vdXJpLmV0c2kub3JnLzAxOTAzI1NpZ25lZFByb3BlcnRpZXMiIFVSST0iI3htbGRzaWctZTQ0NDZmY2EtMWQ2NC00Mzg3LWFlMjgtYTUyNzQ2OGNhMzBhLXNpZ25lZHByb3BzIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ij48L2RzOkRpZ2VzdE1ldGhvZD48ZHM6RGlnZXN0VmFsdWU+Szd5SDJ1MVZJMGRQQ2tENWxWMm9LOVJxUHJ2TzZTODVPZTY5Z3ZtbnVsUT08L2RzOkRpZ2VzdFZhbHVlPjwvZHM6UmVmZXJlbmNlPjwvZHM6U2lnbmVkSW5mbz4="
-//    var testSign  ="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"
-
     fun signWithKeyStore(signInfo: String, pvKey: String): String {
-//        val publicKeyBytes = Base64.encode(userKeys.getPublic().getEncoded(), 0)
-//        val pubKey = String(publicKeyBytes)
         var signString = Base64.decode(signInfo, Base64.NO_WRAP)
 
         val binCpk: ByteArray = Base64.decode(pvKey,Base64.NO_WRAP)
         val keyFactory = KeyFactory.getInstance("RSA")
         val privateKeySpec = PKCS8EncodedKeySpec(binCpk)
         var privateKey = keyFactory.generatePrivate(privateKeySpec)
-//        var pv = cert.pvk?.let { RSACrypt2.decryptAES(it) }
-//
-//
-//        val keySpec = PKCS8EncodedKeySpec(pv)
-//        val kf = KeyFactory.getInstance("RSA")
-//        val privKey = kf.generatePrivate(keySpec)
-//
-//        println("KEY == >$privKey")
         val signature = Signature.getInstance(SIGN_ALGORITHM)
         signature.initSign(privateKey)
         signature.update(signString)
-//        signature.update(signInfo.toByte())
         val encodeSign = Base64.encodeToString(signature.sign(), Base64.NO_WRAP)
         signMessage = encodeSign
-//        println("signMessage => $signMessage")
-        Log.i("pvKey",pvKey)
-        Log.i("signMessage",signMessage)
         return signMessage
     }
 
-    fun verifySignature(context: Context) {
-        val p12: KeyStore = KeyStore.getInstance("pkcs12")
-        val keyFile = (context as Activity).assets.open("CN_TEST_2021.p12")
-        println("keyFile => $keyFile")
-        val passphrase = "123456789".toCharArray()
-        p12.load(keyFile, passphrase)
-        publicKey = p12.getCertificate(p12.aliases().toList().first()).publicKey
-//=======
-//    fun verifySignature(context: Context) {
-//        val p12: KeyStore = KeyStore.getInstance("pkcs12")
-//        val keyFile = (context as Activity).assets.open("CN_TEST_2021.p12")
-//        println("keyFile => $keyFile")
-//        val passphrase = "123456789".toCharArray()
-//        p12.load(keyFile, passphrase)
-//        publicKey = p12.getCertificate(p12.aliases().toList().first()).publicKey
-//>>>>>>> toon
-        val publicSignature = Signature.getInstance(SIGN_ALGORITHM)
-        publicSignature.initVerify(publicKey)
-        println("sdasd => $publicKey")
-//        publicSignature.update(viewBinding.editText.text.toString().toByteArray(Charsets.UTF_8))
-        val signature = Base64.decode(signMessage, Base64.DEFAULT)
-        println("Verify ==> ${publicSignature.verify(signature)}")
-    }
 
-    fun singWithFile() {
-        println("private key <<<<< ${privateKey.algorithm} ${privateKey.format}")
-        //            privateKey.algorithm
-        val signature = Signature.getInstance(SIGN_ALGORITHM)
-        signature.initSign(privateKey)
-//        signature.update(viewBinding.editText.text.toString().toByteArray(Charsets.UTF_8))
-        val encodeSign = Base64.encodeToString(signature.sign(), Base64.DEFAULT)
-        signMessage = encodeSign
-        println("signMessage => $signMessage")
-    }
-
-
-    // Handle any errors (including cancellation) here.
     fun cameraProvider(context: Context): MutableLiveData<ProcessCameraProvider>? {
-//        val processCameraProvider: LiveData<ProcessCameraProvider>
         if (cameraProviderLiveData == null) {
             cameraProviderLiveData = MutableLiveData()
             val cameraProviderFuture =
@@ -165,7 +70,6 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
                     try {
                         cameraProviderLiveData!!.setValue(cameraProviderFuture.get())
                     } catch (e: ExecutionException) {
-                        // Handle any errors (including cancellation) here.
                         Log.e(TAG, "Unhandled exception", e)
                     } catch (e: InterruptedException) {
                         Log.e(TAG, "Unhandled exception", e)
@@ -185,57 +89,13 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
     var showError = SingleLiveEvent<String>()
 
     fun signingSignInfo(urls: String, certCa: String, certChains: String) {
-        showLoading.set(true)
-//        val mockData = SignedInfo(
-//            description = SignedInfo.SignedDescription(
-//                document = SignedInfo.SignedDocument(
-//                    documentInfo = "documentInfo",
-//                    documentType = "documentType",
-//                    refNumber = "refNumber",
-//                    documentName = "documentName",
-//                    documentDescription = "documentDescription",
-//                    businessType = "businessType"
-//                ),
-//                callbackUrl = "callbackUrl",
-//                otherInfo = null
-//            )
-//        )
-//        signedInfo.value = mockData
+
         var data: List<String>
-
-        println("sssss => ${urls.split(";")}")
         data = urls.split(";")
-        println(
-            "data => URL:${data[SigningSingUtil.URL.ordinal]} \n" +
-                    "request_id:${data[SigningSingUtil.REQUEST_ID.ordinal]} \n" +
-                    "token:${data[SigningSingUtil.TOKEN.ordinal]} \n" +
-                    "ref_number:${data[SigningSingUtil.REF_NUMBER.ordinal]}"
-        )
 
-//        showLoading.set(true)
-        var urlTest =
-            "https://api-uat.teda.th/signingserver/api/v2/signing_sign/{request_id}/" + data[SigningSingUtil.REQUEST_ID.ordinal]
         var url = data[SigningSingUtil.URL.ordinal] + "/" + data[SigningSingUtil.REQUEST_ID.ordinal]
-//            homeRepository.signingSign(url,
-//                data[SigningSingUtil.TOKEN.ordinal], certCa, certChains,
-//                object : SigningRepository.OnData {
-//                    override fun onSuccess(data: SignedInfo) {
-//                        showLoading.set(false)
-//                        signedInfo.value = data
-//                    }
-//
-//                    override fun onFailure(data: DataResponse) {
-//                        showLoading.set(false)
-//                        signedInfoError.value = data
-//                    }
-//                })
-        showLoading.set(true)
-        //Mock success
-//        val gson = Gson()
-//        val type = object : TypeToken<SignedInfo>() {}.type
-//        signedInfo.value = gson.fromJson(mockSignSuccess, type)
-//        showError.value = ""
 
+        showLoading.set(true)
 
         viewModelScope.launch {
             val result = homeRepository.signingSign(
@@ -262,39 +122,11 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
 
     fun signingSignInfoSubmit(urls: String, signature: String) {
         val data = urls.split(";")
-        println(
-            "data => URL:${data[SigningSingUtil.URL.ordinal]} \n" +
-                    "request_id:${data[SigningSingUtil.REQUEST_ID.ordinal]} \n" +
-                    "token:${data[SigningSingUtil.TOKEN.ordinal]} \n" +
-                    "ref_number:${data[SigningSingUtil.REF_NUMBER.ordinal]}"
-        )
-        var urlTest =
-            "https://mconnecttest-signing.teda.th/api/v1/signing_sign/" + data[SigningSingUtil.REQUEST_ID.ordinal] + "/submit"
         var url =
             data[SigningSingUtil.URL.ordinal] + "/" + data[SigningSingUtil.REQUEST_ID.ordinal] + "/submit"
-//        showLoading.set(true)
-//        viewModelScope.launch {
-//            homeRepository.signingSignSubmit(url,
-//                data[SigningSingUtil.TOKEN.ordinal], signature,
-//                object : SigningRepository.OnData {
-//                    override fun onSuccess(data: SignedInfo) {
-//                        showLoading.set(false)
-//                        signedInfoSubmit.value = data
-//                    }
-//
-//                    override fun onFailure(data: DataResponse) {
-//                        showLoading.set(false)
-//                        signedInfoSubmitError.value = data
-//                    }
-//                })
-//
-//        }
+
 
         showLoading.set(true)
-//        val gson = Gson()
-//        val type = object : TypeToken<SignedInfo>() {}.type
-//        signedInfoSubmit.value = gson.fromJson(mockSignSubmitSuccess, type)
-//        showError.value = ""
 
         viewModelScope.launch {
             val result = homeRepository.signingSignSubmit(
@@ -317,38 +149,8 @@ class SignViewModel(val homeRepository: SigningRepository) : ViewModel() {
     }
 
 
-    fun getSha256Hash(password: String): String? {
-        return try {
-            var digest: MessageDigest? = null
-            try {
-                digest = MessageDigest.getInstance("SHA-256")
-            } catch (e1: NoSuchAlgorithmException) {
-                e1.printStackTrace()
-            }
-            digest!!.reset()
-            bin2hex(digest.digest(password.toByteArray()))
-        } catch (ignored: Exception) {
-            null
-        }
-    }
 
-    private fun bin2hex(data: ByteArray): String? {
-        val hex = StringBuilder(data.size * 2)
-        for (b in data) hex.append(String.format("%02x", b and 0xFF))
-        return hex.toString()
-    }
 
 
 }
 
-//class HomeViewModelFactory(private val repository: SigningRepository) :
-//    ViewModelProvider.Factory {
-//    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return HomeViewModel(repository) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//
-//}

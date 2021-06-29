@@ -9,8 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
-import org.koin.android.viewmodel.ext.android.viewModel
-import th.or.etda.teda.mobile.MainActivity2
+import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.databinding.BackupKeyPasswordFragmentBinding
 import th.or.etda.teda.mobile.util.UtilApps
@@ -25,9 +24,7 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
         const val REQUEST_KEY = "BackupKeyPasswordFragment_Password"
     }
 
-    val viewModel: BackupKeyPasswordViewModel by viewModel()
 
-//    var certificate: Certificate? = null
 
     override fun onInitDataBinding() {
 
@@ -56,11 +53,7 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
                         bundleOf("password" to password)
                     )
                     findNavController().navigateUp()
-//                    viewModel.encryptP12(requireContext(),edtPassword.text.toString().toCharArray()).let {
-//                        UtilApps.alertDialog(requireContext(),"Create p12 Success")
-//                    }
                 } else {
-//                    viewBinding.edtPassword.setError(getString(R.string.please_input))
                     alertInput()
                 }
 
@@ -78,7 +71,7 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
     fun initActionBar() {
         viewBinding.actionBar.tvTitle.setText("Set Password")
         viewBinding.actionBar.btnBack.setOnClickListener {
-            val ac = activity as MainActivity2
+            val ac = activity as MainActivity
             ac.onBackPressed()
         }
     }

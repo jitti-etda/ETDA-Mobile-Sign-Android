@@ -12,12 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
-import th.or.etda.teda.mobile.MainActivity2
+import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.CertListFragmentBinding
-import th.or.etda.teda.mobile.ui.home.HomeViewModel
 import th.or.etda.teda.ui.base.BaseFragment
 
 
@@ -34,7 +33,6 @@ class CertListFragment : BaseFragment<CertListFragmentBinding>(
 
 
     private val viewModel: CertListViewModel by viewModel()
-    val homeViewModel: HomeViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +104,7 @@ class CertListFragment : BaseFragment<CertListFragmentBinding>(
     fun initActionBar(){
         viewBinding.actionBar.tvTitle.setText("Select Signature")
         viewBinding.actionBar.btnBack.setOnClickListener {
-            val ac = activity as MainActivity2
+            val ac = activity as MainActivity
             ac.onBackPressed()
         }
     }

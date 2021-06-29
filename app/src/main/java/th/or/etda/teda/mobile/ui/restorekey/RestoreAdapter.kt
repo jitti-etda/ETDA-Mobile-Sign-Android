@@ -51,32 +51,11 @@ class RestoreAdapter :
     class ViewHolder(private val binding: ListItemRestoreBinding) :
         RecyclerView.ViewHolder(binding.root) {
         init {
-//            binding.setClickListener {
-//                binding.cert?.let { plant ->
-////                    navigateToPlant(plant, it)
-//
-//                }
-//            }
-//            binding.cardView.setOnClickListener {
-//
-//            }
         }
 
-        private fun navigateToPlant(
-            cert: Certificate,
-            view: View
-        ) {
-//            val direction =
-//                HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment(
-//                    plant.plantId
-//                )
-//            view.findNavController().navigate(direction)
-        }
 
         fun bind(item: GoogleDriveFileHolder) {
-//            Log.i("aaa",item.certName)
             binding.apply {
-//                certTitle.setText(item.certName)
                 driveHolder = item
                 executePendingBindings()
                 certDate.setText(UtilApps.dateConvert(item.createdTime))

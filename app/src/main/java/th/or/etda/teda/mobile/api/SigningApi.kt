@@ -19,11 +19,6 @@ import retrofit2.http.*
 interface SigningApi {
 
 
-
-//    @Headers("Content-Type: application/json")
-//    @POST
-//     fun signingSignQrcode(@Url url: String,@Header("Token") token:String,@Body body: String): Call<String>
-
     @Headers("Content-Type: application/json")
     @POST
     suspend fun signingSignQrcode(@Url url: String,@Header("Token") token:String,@Body body: String): Response<String>

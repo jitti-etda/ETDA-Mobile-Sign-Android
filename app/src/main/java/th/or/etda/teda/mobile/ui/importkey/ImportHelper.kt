@@ -11,7 +11,6 @@ import th.or.etda.teda.mobile.common.CryptLib
 import th.or.etda.teda.mobile.common.SingleLiveEvent
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.model.ExtrackP12
-import th.or.etda.teda.mobile.ui.home.HomeViewModel
 import th.or.etda.teda.mobile.util.Constants
 import th.or.etda.teda.mobile.util.KeyUtil.toBase64
 import th.or.etda.teda.mobile.util.UtilApps
@@ -40,63 +39,18 @@ class ImportHelper {
             val keyFile = context.contentResolver.openInputStream(uri)
 
 
-            println("sss => $keyFile")
 
             val p12: KeyStore = KeyStore.getInstance("pkcs12")
             p12.load(keyFile, password.toCharArray())
-            println("----------------------------")
 
-//                if (!p12.aliases().toList().isEmpty()) {
             val alias = p12.aliases().toList().first()
-            Log.i("alias", alias)
             val priKey: PrivateKey =
                 p12.getKey(p12.aliases().toList().first(), password.toCharArray()) as PrivateKey
-//                    val privateKey: Key = p12.getKey(alias, password)
 
             val aliasesName = p12.aliases().toList().first()
             val certificateChain = p12.getCertificateChain(aliasesName)
             val certCa = certificateChain.first().toBase64()
             val cartChains = certificateChain.last().toBase64()
-
-//                val certificate = Certificate("etda-ca", certCa, cartChains)
-//            val c: X509Certificate = p12.getCertificate(alias) as X509Certificate
-
-//                var private = priKey.toString()
-
-//                var rsaKey = RSACrypt2.getAsymmetricKeyPair()
-//                var pv = rsaKey?.public?.let { it1 -> RSACrypt2.encrypt(priKey.encoded, it1) }
-
-//                var aes = RSACrypt2.encryptAES(priKey.encoded)
-//                KeyStoreHelper.createKeys(context, name)
-//
-//
-//                val kpg = KeyPairGenerator.getInstance(
-//                    KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore"
-//                )
-//
-//                kpg.initialize(
-//                    KeyGenParameterSpec.Builder(
-//                        "password_alias",
-//                        KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY
-//                    )
-//                        .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-//                        .setKeySize(1024)
-//                        .build()
-//                )
-//
-//                val keyPair = kpg.generateKeyPair()
-//
-//                val keyStore = KeyStore.getInstance("AndroidKeyStore")
-//                keyStore.load(null)
-//                val entry = keyStore.getEntry("password_alias", null)
-//                val privateKey = (entry as KeyStore.PrivateKeyEntry).privateKey
-//                val publicKey = keyStore.getCertificate("password_alias").publicKey
-//
-////                var rsa = KeyStoreHelper.encrypt(name, priKey.encoded,publicKey)
-//
-//                var ss = RSACrypt2.encrypt(priKey.encoded,publicKey)
-
-//            addCertificate(Certificate(name, certCa, cartChains))
 
 
             val cert = p12.getCertificateChain(alias)
@@ -105,23 +59,13 @@ class ImportHelper {
 
 
 
-            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
-//                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
+            val ks = KeyStore.getInstance(Constants.ANDROID_KEY_STORE)
             ks.load(null)
-//                ks.setCertificateEntry(alias, cert[0])
             ks.setKeyEntry(name, priKey, null, cert)
 
             return Certificate(name, certCa, cartChains,UtilApps.currentDate())
         }
 
-
-
-        private fun generateSecretKey(keyGenParameterSpec: KeyGenParameterSpec) {
-            val keyGenerator = KeyGenerator.getInstance(
-                KeyProperties.KEY_ALGORITHM_AES, HomeViewModel.ANDROID_KEY_STORE)
-            keyGenerator.init(keyGenParameterSpec)
-            keyGenerator.generateKey()
-        }
 
         fun extrackP12(
             context: Context,
@@ -132,13 +76,10 @@ class ImportHelper {
             val keyFile = context.contentResolver.openInputStream(uri)
 
 
-            println("sss => $keyFile")
 
             val p12: KeyStore = KeyStore.getInstance("pkcs12")
             p12.load(keyFile, password.toCharArray())
-            println("----------------------------")
 
-//                if (!p12.aliases().toList().isEmpty()) {
             val alias = p12.aliases().toList().first()
             Log.i("alias", alias)
             val priKey: PrivateKey =
@@ -147,10 +88,8 @@ class ImportHelper {
             val certCa = certificateChain.first().toBase64()
             val cartChains = certificateChain.last().toBase64()
 
-            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
-//                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
+            val ks = KeyStore.getInstance(Constants.ANDROID_KEY_STORE)
             ks.load(null)
-//                ks.setCertificateEntry(alias, cert[0])
             ks.setKeyEntry(name, priKey, null, certificateChain)
 
 
@@ -182,7 +121,7 @@ class ImportHelper {
             val cartChains = certificateChain.last().toBase64()
 
             val cert = p12.getCertificateChain(alias)
-            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
+            val ks = KeyStore.getInstance(Constants.ANDROID_KEY_STORE)
 //                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
             ks.load(null)
 //                ks.setCertificateEntry(alias, cert[0])
@@ -216,15 +155,6 @@ class ImportHelper {
             val certificateChain = p12.getCertificateChain(aliasesName)
             val certCa = certificateChain.first().toBase64()
             val cartChains = certificateChain.last().toBase64()
-//
-//            val cert = p12.getCertificateChain(alias)
-//            val ks = KeyStore.getInstance(HomeViewModel.ANDROID_KEY_STORE)
-////                val ks = KeyStore.getInstance(KeyStore.getDefaultType())
-//            ks.load(null)
-////                ks.setCertificateEntry(alias, cert[0])
-//            ks.setKeyEntry(name, priKey, null, cert)
-
-
              return ExtrackP12(cartChains,certCa,priKey)
         }
 
@@ -236,20 +166,7 @@ class ImportHelper {
         ) {
 
             try {
-//                val folder = context.getExternalFilesDir(Constants.Folder)
                 val folder = context.getExternalFilesDir(Constants.FolderBackup)
-//                val folder = File(
-//                    Environment.getExternalStorageDirectory().toString() +
-//                            File.separator + Constants.Folder
-//                )
-//                if (!folder.exists()) {
-//                    folder.mkdirs()
-//                }
-
-//            val fileStore = File(
-//                folder,
-//                name + "_backup.p12"
-//            )
                 val fileStoreEncrypt = File(
                     folder,
                     name + "_backup" + ".txt"
@@ -261,57 +178,21 @@ class ImportHelper {
                 val cryptLib = CryptLib()
                 var res = cryptLib.encryptPlainText(s, password)
 
-//                var res = AESHelper.encryptAES(sss, password)
                 writeToFile(res, fileStoreEncrypt)
 
-
-//            var keyStore = KeyStore.getInstance("PKCS12")
-//            val byteBuff: ByteArray = Files.readAllBytes(Paths.get(file.toURI()))
-//            val inputStream: InputStream = ByteArrayInputStream(byteBuff)
-//            keyStore.load(inputStream, password)
-//
-//            keyStore.store(FileOutputStream(fileStore), password).let {
-//
-//                val sss: ByteArray = Files.readAllBytes(Paths.get(fileStore.toURI()))
-//                var res = RSACrypt2.encryptAES(sss)
-//                writeToFile(res, fileStoreEncrypt)
-//
-//                var read = readFile(fileStoreEncrypt)
-//                var de = RSACrypt2.decryptAES(read)
-//                de?.let { it1 -> writeToFileByteArray(it1, fileStoreDecrypt) }
-//            }
 
 
             } catch (e: IOException) {
                 e.printStackTrace()
-//                Toast.makeText(context, "wrong password or corrupted file", Toast.LENGTH_SHORT)
-//                    .show()
-                UtilApps.alertDialog(context, "wrong password or corrupted file")
+                UtilApps.alertDialog(context, "Wrong password or corrupted file")
             }
 
 
         }
 
 
-        fun convertImageFileToBase64(imageFile: File): String {
-            return ByteArrayOutputStream().use { outputStream ->
-                Base64OutputStream(outputStream, android.util.Base64.DEFAULT).use { base64FilterStream ->
-                    imageFile.inputStream().use { inputStream ->
-                        inputStream.copyTo(base64FilterStream)
-                    }
-                }
-                return@use outputStream.toString()
-            }
-        }
 
-        private fun writeToFileByteArray(data: ByteArray, file: File) {
-            val stream = FileOutputStream(file)
-            try {
-                stream.write(data)
-            } finally {
-                stream.close()
-            }
-        }
+
 
         private fun writeToFile(data: String, file: File) {
             val stream = FileOutputStream(file)
@@ -323,20 +204,7 @@ class ImportHelper {
             fileLiveData.value = file
         }
 
-        private fun readFile(file: File): String {
-            val length = file.length().toInt()
 
-            val bytes = ByteArray(length)
-
-            val `in` = FileInputStream(file)
-            try {
-                `in`.read(bytes)
-            } finally {
-                `in`.close()
-            }
-
-            return String(bytes)
-        }
 
         public fun convertStreamToString(`is`: InputStream): String? {
 
@@ -380,24 +248,6 @@ class ImportHelper {
             }
         }
 
-        fun writeTempFileTest(context: Context, data: ByteArray): File {
-            val folder = context.getExternalFilesDir(Constants.FolderBackup)
-            val fileStoreEncrypt = File(
-                folder,"temp_decrypt_export.p12"
-            )
-            try {
-                val stream = FileOutputStream(fileStoreEncrypt)
-                try {
-                    stream.write(data)
-                } finally {
-                    stream.close()
-                }
-                return fileStoreEncrypt
-            } finally {
-            }
-
-
-        }
     }
 
 

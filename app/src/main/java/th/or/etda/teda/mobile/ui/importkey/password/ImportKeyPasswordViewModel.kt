@@ -41,66 +41,6 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
     }
 
 
-    //    fun extractCA(context: Context, password: String,passwordBackup: String, name: String, file: File,isBackup:Boolean): Boolean {
-//
-//        try {
-//            caUri.value?.let { it ->
-//                println("path is => ${caUri.value}")
-//
-//
-//               var cert =  ImportHelper.import(context,it,password,passwordBackup,name,file,isBackup)
-//
-//                addCertificate(cert)
-//
-//                return true
-//            }
-//
-//
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//            Toast.makeText(context, "wrong password or corrupted file", Toast.LENGTH_SHORT).show()
-//        }
-//        return false
-//    }
-    var extractSuccess = SingleLiveEvent<String>()
-    fun extractCA(
-        context: Context,
-        password: String,
-        nameRoot: String
-    ) {
-
-        showLoading.set(true)
-        viewModelScope.launch {
-            try {
-                caUri.value?.let { it ->
-                    println("path is => ${caUri.value}")
-
-//                    var name = nameRoot + "_" + System.currentTimeMillis() / 1000
-                    var name = nameRoot + "_" + UtilApps.timestampName()
-                    var cert = ImportHelper.import(
-                        context,
-                        it,
-                        password,
-                        name
-                    )
-                    showLoading.set(false)
-
-                    addCertificate(cert)
-                    extractSuccess.value = name
-
-                }
-
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-                extractSuccess.value = ""
-//                Toast.makeText(context, "wrong password or corrupted file", Toast.LENGTH_SHORT)
-//                    .show()
-
-            }
-        }
-
-    }
 
     var extractP12Success = SingleLiveEvent<ExtrackP12>()
     fun extractP12(
@@ -139,31 +79,6 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
 
 
 
-    private fun addCertificateToKeyStore(c: X509Certificate) {
-        try {
-            val ks = KeyStore.getInstance("AndroidKeyStore")
-            ks.load(null)
-            ks.setCertificateEntry("myCertAlias", c)
-        } catch (e: java.lang.Exception) {
-        }
-    }
-
-
-    fun encrypt(data: String, publicKey: Key?): String {
-        val cipher: Cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey)
-        val bytes = cipher.doFinal(data.toByteArray())
-        return Base64.encodeToString(bytes, Base64.DEFAULT)
-    }
-
-    fun decrypt(data: String, privateKey: Key?): String {
-        val cipher: Cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-        cipher.init(Cipher.DECRYPT_MODE, privateKey)
-        val encryptedData = Base64.decode(data, Base64.DEFAULT)
-        val decodedData = cipher.doFinal(encryptedData)
-        return String(decodedData)
-    }
-
 
 
     var uploadSuccess = MutableLiveData<Boolean>()
@@ -196,15 +111,3 @@ class ImportKeyPasswordViewModel(val repository: CertificateRepository) : ViewMo
     }
 
 }
-
-//class ExtractCaViewModelFactory(private val repository: CertificateRepository) :
-//    ViewModelProvider.Factory {
-//    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(ExtractCAViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return ExtractCAViewModel(repository) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//
-//}

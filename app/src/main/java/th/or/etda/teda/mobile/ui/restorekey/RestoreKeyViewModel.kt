@@ -47,7 +47,6 @@ class RestoreKeyViewModel(val repository: CertificateRepository) : ViewModel() {
                             for (i in 0 until folders.size) {
                                 var folder = folders[i]
                                 mDriveServiceHelper.queryFilesWithoutDelete(folder.id)
-//                            mDriveServiceHelper.searchFile("Copy",".txt")
                                     ?.addOnCompleteListener {
                                         showLoading.set(false)
                                         fileGoogleDriveLive.value = it.result
@@ -68,34 +67,8 @@ class RestoreKeyViewModel(val repository: CertificateRepository) : ViewModel() {
 
         }
 
-
-//        viewModelScope.launch {
-//            mDriveServiceHelper.queryFilesWithoutDelete(folders[0]?.id)?.addOnCompleteListener {
-//                showLoading.set(false)
-//                fileGoogleDriveLive.value = it.result
-//            }
-//        }
     }
 
-    fun getTest(mDriveServiceHelper: DriveServiceHelper) {
-        viewModelScope.launch {
-            var list = mDriveServiceHelper.getAllFilesGdrive()
-            for (i in 0 until list.size) {
-                Log.i("name", list[i].name)
-            }
-        }
-    }
-
-//    var downloadSuccess = MutableLiveData<InputStream>()
-//    fun downloadFile(mDriveServiceHelper: DriveServiceHelper, fileID: String) {
-//        viewModelScope.launch {
-//
-//            mDriveServiceHelper.downloadFile(fileID)?.addOnCompleteListener {
-//                downloadSuccess.value = it.result
-//            }
-//
-//        }
-//    }
 
     var downloadSuccess = MutableLiveData<InputStream>()
     suspend fun downloadFile(
@@ -137,41 +110,6 @@ class RestoreKeyViewModel(val repository: CertificateRepository) : ViewModel() {
 
     }
 
-//    var restoreSuccess = MutableLiveData<Boolean>()
-//    fun restore(context: Context, byteArray: ByteArray, password: String, nameRoot: String) {
-//        viewModelScope.launch {
-//            try {
-//                var name = nameRoot + "_" + System.currentTimeMillis() / 1000
-//                var cert = ImportHelper.restore(byteArray, password, name)
-//
-//                addCertificate(cert)
-//                restoreSuccess.value = true
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//                Toast.makeText(context, "wrong password or corrupted file", Toast.LENGTH_SHORT)
-//                    .show()
-//                restoreSuccess.value = false
-//            }
-//        }
-//    }
 
-    //    var dataDecrypt = MutableLiveData<ByteArray>()
-//    fun decrypt(inputStream: InputStream, password: String): ByteArray? {
-//        var data = ImportHelper.convertStreamToString(inputStream)
-//
-////        viewModelScope.launch {
-////
-////
-////            dataDecrypt.value = data?.let { RSACrypt2.decryptAES(it, password) };
-////
-////        }
-//        return data?.let { AESHelper.decryptAES(it, password) }
-//    }
-
-    fun addCertificate(certificate: Certificate) {
-        viewModelScope.launch {
-            repository.insert(certificate)
-        }
-    }
 
 }

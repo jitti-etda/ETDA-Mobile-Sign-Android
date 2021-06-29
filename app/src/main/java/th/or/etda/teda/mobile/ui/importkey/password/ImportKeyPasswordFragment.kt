@@ -27,7 +27,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputLayout
 import com.google.api.services.drive.DriveScopes
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -36,7 +35,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import org.koin.android.viewmodel.ext.android.viewModel
-import th.or.etda.teda.mobile.MainActivity2
+import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.data.Certificate
@@ -44,8 +43,8 @@ import th.or.etda.teda.mobile.databinding.ImportKeyPasswordFragmentBinding
 import th.or.etda.teda.mobile.model.ExtrackP12
 import th.or.etda.teda.mobile.ui.backupkey.googledrive.DriveServiceHelper
 import th.or.etda.teda.mobile.ui.backupkey.password.BackupKeyPasswordFragment
-import th.or.etda.teda.mobile.ui.home.HomeViewModel
 import th.or.etda.teda.mobile.ui.importkey.ImportHelper
+import th.or.etda.teda.mobile.util.Constants
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
 import java.io.File
@@ -142,7 +141,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
     fun initActionBar() {
         viewBinding.actionBar.tvTitle.setText("Import P12 password")
         viewBinding.actionBar.btnBack.setOnClickListener {
-            val ac = activity as MainActivity2
+            val ac = activity as MainActivity
             ac.onBackPressed()
         }
     }
@@ -155,7 +154,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
 
         BiometricEncryptedSharedPreferences.create(
             this,
-            HomeViewModel.FileName,
+            Constants.FileName,
             1,
             BiometricPrompt.PromptInfo.Builder().setTitle(getString(R.string.app_name))
                 .setAllowedAuthenticators(

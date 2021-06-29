@@ -3,9 +3,7 @@ package th.or.etda.teda.mobile.ui.splash
 import android.content.Intent
 import android.os.Bundle
 import th.or.etda.teda.mobile.MainActivity
-import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
-import th.or.etda.teda.mobile.databinding.ActivityMainBinding
 import th.or.etda.teda.mobile.databinding.ActivitySplashBinding
 import th.or.etda.teda.ui.base.BaseActivity
 import java.util.*
@@ -28,7 +26,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
         timerTask = object : TimerTask() {
             override fun run() {
-                val `in` = Intent(this@SplashActivity, MainActivity2::class.java)
+                val `in` = Intent(this@SplashActivity, MainActivity::class.java)
                 startActivity(`in`)
                 finish()
             }

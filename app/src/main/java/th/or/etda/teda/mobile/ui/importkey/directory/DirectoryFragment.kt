@@ -2,7 +2,6 @@ package th.or.etda.teda.mobile.ui.importkey.directory
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION.SDK_INT
@@ -10,7 +9,6 @@ import android.os.Environment
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,11 +21,9 @@ import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.BuildConfig.APPLICATION_ID
 import th.or.etda.teda.mobile.MainActivity
-import th.or.etda.teda.mobile.MainActivity2
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.databinding.DirectoryFragmentBinding
-import th.or.etda.teda.mobile.ui.backupkey.password.BackupKeyPasswordViewModel
 import th.or.etda.teda.ui.base.BaseFragment
 
 
@@ -35,9 +31,6 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
     layoutId = R.layout.directory_fragment
 ) {
 
-    companion object {
-        const val PERMISSION_EXTRANAL_REQUEST = 1111
-    }
 
 
     private lateinit var adapterDirectory: DirectoryAdapter
@@ -58,29 +51,6 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
                 viewBinding.recyclerView,
                 object : RecyclerItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
-//                        var intent = Intent(requireContext(), DeepLinkActivity::class.java)
-//                        intent.setData()
-//                        startActivity(intent)
-//                        requireCompatActivity().finish()
-
-//                        val myMime = MimeTypeMap.getSingleton()
-//                        val newIntent = Intent(Intent.ACTION_VIEW)
-//                        newIntent.setDataAndType(Uri.fromFile(File(adapterDirectory.currentList[position].path)), "application/x-pkcs12")
-//                        newIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//                        try {
-//                            startActivity(newIntent)
-//                            requireCompatActivity().finish()
-//                        } catch (e: ActivityNotFoundException) {
-//                            Toast.makeText(
-//                                requireContext(),
-//                                "No handler for this type of file.",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-
-//                        driveViewModel.encrypt(requireContext(),adapterDirectory.currentList[position].path)
-//                        backupPassViewModel.encryptP12(requireContext(),"123456".toCharArray(),"",adapterDirectory.currentList[position].path)
-
                         val action =
                             DirectoryFragmentDirections.nextActionImportPassword(
                                 adapterDirectory.currentList[position].path,
@@ -94,18 +64,6 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
                 })
         )
 
-
-//        if (isExtranal()) {
-//            getAllFile()
-//        } else {
-//            ActivityCompat.requestPermissions(
-//                requireActivity(),
-//                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//                PERMISSION_EXTRANAL_REQUEST
-//            ).let {
-//                getAllFile()
-//            }
-//        }
 
 
         Dexter.withContext(requireContext())
@@ -145,7 +103,7 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
     fun initActionBar(){
         viewBinding.actionBar.tvTitle.setText("Import P12")
         viewBinding.actionBar.btnBack.setOnClickListener {
-            val ac = activity as MainActivity2
+            val ac = activity as MainActivity
             ac.onBackPressed()
         }
     }
@@ -176,9 +134,6 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
 
         viewBinding.progressBar.visibility = View.VISIBLE
         lifecycleScope.launch {
-
-//            requireContext().getExternalFilesDir()
-
             viewModel.getExternalStorageDirectory().let {
                 it?.let { it1 ->
                     viewModel.getFile(it1)
@@ -197,12 +152,6 @@ class DirectoryFragment : BaseFragment<DirectoryFragmentBinding>(
     }
 
 
-    private fun isExtranal(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
 
 
 }

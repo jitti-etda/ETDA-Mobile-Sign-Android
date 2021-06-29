@@ -39,7 +39,6 @@ class RestoreImportKeyPasswordViewModel(val repository: CertificateRepository) :
         viewModelScope.launch {
             try {
                 var name = nameRoot + "_" + UtilApps.timestampName()
-//                var cert = ImportHelper.restore(byteArray, password, name)
                 var private = ImportHelper.restoreP12(byteArray, password, name)
                 extractP12Success.value = private
 

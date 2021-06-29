@@ -7,14 +7,12 @@ import android.view.Window
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import org.koin.android.viewmodel.ext.android.viewModel
-import th.or.etda.teda.mobile.MainActivity2
+import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.databinding.RestoreKeyPasswordFragmentBinding
-import th.or.etda.teda.mobile.ui.importkey.ImportHelper
 import th.or.etda.teda.mobile.ui.restorekey.RestoreKeyFragment
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
-import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 
@@ -30,7 +28,6 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
 
     val viewModel: RestoreKeyPasswordViewModel by viewModel()
 
-//    var certificate: Certificate? = null
 
     override fun onInitDataBinding() {
         initActionBar()
@@ -53,7 +50,6 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
                     }
 
                 }else{
-//                    viewBinding.edtPassword.setError(getString(R.string.please_input))
                     alertInput()
                 }
 
@@ -69,8 +65,6 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
         )
 
         if (dataDecrypt == null) {
-//            Toast.makeText(context, "Wrong password", Toast.LENGTH_SHORT)
-//                .show()
             UtilApps.alertDialog(context,"Wrong password")
         } else {
             val action =
@@ -83,7 +77,7 @@ class RestoreKeyPasswordFragment : BaseFragment<RestoreKeyPasswordFragmentBindin
     fun initActionBar() {
         viewBinding.actionBar.tvTitle.setText("Password Backup")
         viewBinding.actionBar.btnBack.setOnClickListener {
-            val ac = activity as MainActivity2
+            val ac = activity as MainActivity
             ac.onBackPressed()
         }
     }

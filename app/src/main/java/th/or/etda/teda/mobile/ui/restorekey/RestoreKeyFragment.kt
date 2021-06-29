@@ -1,7 +1,6 @@
 package th.or.etda.teda.mobile.ui.restorekey
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -18,14 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.Scope
 import com.google.android.material.button.MaterialButton
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.google.api.client.json.gson.GsonFactory
-import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
-import th.or.etda.teda.mobile.MainActivity2
+import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.databinding.RestoreKeyFragmentBinding
@@ -86,49 +81,6 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
 
         }
 
-//        setFragmentResultListener(BackupKeyPasswordFragment.REQUEST_KEY) { key, bundle ->
-//            // read from the bundle
-//            lifecycleScope.launch {
-//                var password = bundle.getString("password")
-//
-//                password?.let {
-//                    var data = viewModel.decrypt(fileDownload!!, it)
-//                    if (data == null) {
-//                        Toast.makeText(requireContext(), "Wrong password", Toast.LENGTH_SHORT)
-//                            .show()
-//                        return@let
-//                    }
-//
-//                    val action =
-//                        RestoreKeyFragmentDirections.nextActionImportPassword("", true)
-//                    findNavController().navigate(action)
-//
-//                    setFragmentResultListener(ImportKeyPasswordFragment.REQUEST_KEY) { key, bundle ->
-//                        // read from the bundle
-//                        val passwordP12 = bundle.getString("password")
-//
-//                        val name = bundle.getString("name")
-//
-//                        if (passwordP12 != null) {
-//                            data?.let {
-//                                name?.let { it1 ->
-//                                    viewModel.restore(
-//                                        requireContext(), it, passwordP12,
-//                                        it1
-//                                    )
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        viewModel.restoreSuccess.observe(viewLifecycleOwner, Observer {
-//            if (it) {
-//                alertComplete("Restore complete")
-//            }
-//
-//        })
 
 
     }
@@ -141,7 +93,7 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
     fun initActionBar() {
         viewBinding.actionBar.tvTitle.setText("Restore key")
         viewBinding.actionBar.btnBack.setOnClickListener {
-            val ac = activity as MainActivity2
+            val ac = activity as MainActivity
             ac.onBackPressed()
         }
     }
@@ -153,7 +105,6 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
         if (account == null) {
             signIn()
         } else {
-//            viewBinding.tvEmail.setText(account.email)
             mDriveServiceHelper =
                 DriveServiceHelper(
                     DriveServiceHelper.getGoogleDriveService(
@@ -162,18 +113,12 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
                         DriveServiceHelper.DRIVE_APP_NAME
                     )
                 )
-//            viewBinding.createTextFile.setOnClickListener {
-//                mDriveServiceHelper?.createFile("Test TEDA")
-//            }
 
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
             val googleSignInClient = GoogleSignIn.getClient(requireCompatActivity(), gso)
             googleSignInClient.signOut().addOnSuccessListener {
                 signIn()
             }
-
-//            getFileBackup()
-
 
         }
     }

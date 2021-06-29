@@ -1,6 +1,5 @@
 package th.or.etda.teda.mobile.ui.restorekey.import
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
@@ -14,18 +13,16 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import org.koin.android.viewmodel.ext.android.viewModel
-import th.or.etda.teda.mobile.MainActivity2
+import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.RestoreImportKeyPasswordFragmentBinding
 import th.or.etda.teda.mobile.model.ExtrackP12
-import th.or.etda.teda.mobile.ui.home.HomeViewModel
-import th.or.etda.teda.mobile.ui.importkey.password.ImportKeyPasswordFragmentDirections
 import th.or.etda.teda.mobile.ui.restorekey.password.RestoreKeyPasswordFragment
+import th.or.etda.teda.mobile.util.Constants
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
-import java.security.PrivateKey
 
 
 class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFragmentBinding>(
@@ -78,19 +75,12 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
     fun initActionBar() {
         viewBinding.actionBar.tvTitle.setText("Import P12 password")
         viewBinding.actionBar.btnBack.setOnClickListener {
-            val ac = activity as MainActivity2
+            val ac = activity as MainActivity
             ac.onBackPressed()
         }
     }
 
     fun restore(data: ByteArray, password: String, name: String) {
-//        viewModel.restore(requireContext(), data, password, name)
-//        viewModel.restoreSuccess.observe(viewLifecycleOwner, Observer {
-//            if (it) {
-//                alertComplete("Restore complete")
-//            }
-//
-//        })
         viewModel.extractP12Success.observe(viewLifecycleOwner, Observer {
             saveData(name, it)
         })
@@ -102,15 +92,10 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
         var name = key + "_" + UtilApps.timestampName()
         val privKeyBytes: ByteArray? = extrackP12.privateKey?.encoded
         val privKeyStr = String(Base64.encode(privKeyBytes, 2))
-//
-//        val editor = sharedPreferences.edit()
-//        editor.putString(name, privKeyStr)
-//        editor.apply()
-
 
         BiometricEncryptedSharedPreferences.create(
             this,
-            HomeViewModel.FileName,
+            Constants.FileName,
             1,
             BiometricPrompt.PromptInfo.Builder().setTitle(getString(R.string.app_name))
                 .setAllowedAuthenticators(
@@ -127,33 +112,15 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
                         UtilApps.currentDate()
                     )
                 )
-                alertComplete("Restore complete")
+                alertComplete()
             }
 
         })
-//            .setTitle("Please Sign Signature")
-//            .setSubtitle("Teda Mobile")
-//            .setNegativeButtonText("Cancel")
 
 
     }
 
-    private fun alertComplete(message: String) {
-//        AlertDialog.Builder(requireActivity())
-//            .setTitle("Complete")
-//            .setMessage(message)
-//            .setCancelable(false)
-//            .setPositiveButton(
-//                "Close"
-//            ) { dialog, which ->
-//
-//                dialog.cancel()
-//
-//                val action =
-//                    RestoreImportKeyPasswordFragmentDirections.nextActionToFirst()
-//                findNavController().navigate(action)
-//
-//            }.show()
+    private fun alertComplete() {
 
 
         val dialog = Dialog(requireCompatActivity())

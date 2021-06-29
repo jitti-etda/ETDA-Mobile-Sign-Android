@@ -2,7 +2,6 @@ package th.or.etda.teda.mobile.ui.restorekey.password
 
 import android.util.Base64
 import androidx.lifecycle.ViewModel
-import th.or.etda.teda.mobile.common.AESHelper
 import th.or.etda.teda.mobile.common.CryptLib
 import th.or.etda.teda.mobile.ui.importkey.ImportHelper
 import java.io.*
@@ -11,12 +10,9 @@ import java.io.*
 class RestoreKeyPasswordViewModel : ViewModel() {
 
 
-    //    var dataDecrypt = MutableLiveData<ByteArray>()
     fun decrypt(inputStream: InputStream, password: String): ByteArray? {
         var data = ImportHelper.convertStreamToString(inputStream)
         if (data != null) {
-//            var bArray = AESHelper.decryptAES(data, password)
-//            var bArray = AesBase64Wrapper.getInstance().decodeAndDecrypt(data,password);
 
             var bArray: ByteArray;
             val cryptLib = CryptLib()
@@ -26,18 +22,11 @@ class RestoreKeyPasswordViewModel : ViewModel() {
             } catch (e: Exception) {
                 return null
             }
-//            val bArray: ByteArray = text.encodeToByteArray()
             if (bArray != null) {
                 if (bArray.isEmpty()) {
                     return null
                 }
 
-
-//                for (b in bArray) {
-//                    if (b.toInt() == 0) {
-//                        return null
-//                    }
-//                }
                 return bArray
             }
 
