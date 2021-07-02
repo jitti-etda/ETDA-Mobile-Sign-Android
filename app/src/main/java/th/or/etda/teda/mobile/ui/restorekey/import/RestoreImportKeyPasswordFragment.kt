@@ -82,7 +82,7 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
 
     fun restore(data: ByteArray, password: String, name: String) {
         viewModel.extractP12Success.observe(viewLifecycleOwner, Observer {
-            saveData(name, it)
+            saveData(it.name, it)
         })
         viewModel.restoreP12(requireContext(), data, password, name)
 

@@ -7,6 +7,7 @@ import java.security.PrivateKey
 
 @Parcelize
 data class ExtrackP12(
+    val name : String,
     val chains : String,
     val cert : String,
     val privateKey : PrivateKey

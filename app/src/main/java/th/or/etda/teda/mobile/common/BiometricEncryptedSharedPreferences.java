@@ -143,7 +143,8 @@ public class BiometricEncryptedSharedPreferences {
 
         int bio = 0;
        try{
-            bio = biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
+            bio = biometricManager.canAuthenticate(BIOMETRIC_STRONG);
+//           bio = biometricManager.canAuthenticate(BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
         }catch (Exception e){
             bio = biometricManager.canAuthenticate();
         }
@@ -165,7 +166,8 @@ public class BiometricEncryptedSharedPreferences {
                 Log.e("MY_APP_TAG", "BIOMETRIC_ERROR_NONE_ENROLLED.");
                 // Prompts the user to create credentials that your app accepts.
                 new AlertDialog.Builder(context)
-                        .setMessage("Please enable Biometric")
+                        .setMessage("เครื่องของคุณยังไม่ได้มีการตั้งค่า Biometric " +
+                                "กรุณากด OK เพื่อไปยังการตั้งค่า")
                         .setPositiveButton("OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -175,8 +177,6 @@ public class BiometricEncryptedSharedPreferences {
                                         Intent enrollIntent = null;
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                                             enrollIntent = new Intent(Settings.ACTION_BIOMETRIC_ENROLL);
-                                            enrollIntent.putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                                                    BIOMETRIC_STRONG | DEVICE_CREDENTIAL);
                                         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 
                                             enrollIntent = new Intent(Settings.ACTION_FINGERPRINT_ENROLL);

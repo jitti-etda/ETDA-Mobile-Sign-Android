@@ -13,9 +13,6 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/commons" />
             <option value="$PROJECT_DIR$/commons/ui" />
-            <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/features" />
-            <option value="$PROJECT_DIR$/features/home" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

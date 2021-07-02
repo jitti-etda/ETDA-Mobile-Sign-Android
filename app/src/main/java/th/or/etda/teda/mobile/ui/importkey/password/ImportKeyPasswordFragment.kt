@@ -197,7 +197,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         if (password.isNotEmpty() && name.trim().isNotEmpty()) {
             var nameTime = name + "_" + UtilApps.timestampName()
             viewModel.extractP12Success.observe(viewLifecycleOwner, Observer {
-                saveData(nameTime, it)
+                saveData(it.name, it)
             })
             var file = File(filePath)
             viewModel.caUri.value = Uri.fromFile(file)

@@ -93,7 +93,7 @@ class ImportHelper {
             ks.setKeyEntry(name, priKey, null, certificateChain)
 
 
-            return ExtrackP12(cartChains,certCa,priKey)
+            return ExtrackP12(name,cartChains,certCa,priKey)
         }
 
         fun restore(
@@ -155,7 +155,7 @@ class ImportHelper {
             val certificateChain = p12.getCertificateChain(aliasesName)
             val certCa = certificateChain.first().toBase64()
             val cartChains = certificateChain.last().toBase64()
-             return ExtrackP12(cartChains,certCa,priKey)
+             return ExtrackP12(name,cartChains,certCa,priKey)
         }
 
         public fun encryptP12forBackup(

@@ -86,7 +86,13 @@ class CertAdapter : ListAdapter<Certificate, RecyclerView.ViewHolder>(CertDiffCa
 //                certTitle.setText(item.certName)
                 cert = item
                 executePendingBindings()
-                certTitle.setText(item.certName.split("_")[0])
+                var split = item.certName.split("_")
+                if(split.size>2){
+                    certTitle.setText(item.certName.replace("_"+split[split.size-1],""))
+                }else{
+                    certTitle.setText(split[0])
+                }
+
             }
         }
     }

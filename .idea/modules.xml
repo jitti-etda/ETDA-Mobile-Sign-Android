@@ -6,9 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/teda-mobile.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/teda-mobile.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/commons/teda-mobile.commons.iml" filepath="$PROJECT_DIR$/.idea/modules/commons/teda-mobile.commons.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/commons/ui/teda-mobile.commons.ui.iml" filepath="$PROJECT_DIR$/.idea/modules/commons/ui/teda-mobile.commons.ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/teda-mobile.core.iml" filepath="$PROJECT_DIR$/.idea/modules/core/teda-mobile.core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/teda-mobile.features.iml" filepath="$PROJECT_DIR$/.idea/modules/features/teda-mobile.features.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/features/home/teda-mobile.features.home.iml" filepath="$PROJECT_DIR$/.idea/modules/features/home/teda-mobile.features.home.iml" />
     </modules>
   </component>
 </project>
