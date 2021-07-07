@@ -152,7 +152,7 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         val privKeyStr = String(Base64.encode(privKeyBytes, Base64.NO_WRAP))
 
         var allowBio = 0
-        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==28){
+        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==29){
             allowBio = BIOMETRIC_WEAK or DEVICE_CREDENTIAL
         }else{
             allowBio = BIOMETRIC_STRONG or DEVICE_CREDENTIAL

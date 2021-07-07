@@ -95,7 +95,7 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
         val privKeyStr = String(Base64.encode(privKeyBytes, 2))
 
         var allowBio = 0
-        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==28){
+        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==29){
             allowBio = BiometricManager.Authenticators.BIOMETRIC_WEAK or DEVICE_CREDENTIAL
         }else{
             allowBio = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
