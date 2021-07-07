@@ -14,8 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricManager.Authenticators.*
 import androidx.biometric.BiometricPrompt
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
@@ -152,13 +151,20 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         val privKeyBytes: ByteArray? = extrackP12.privateKey?.encoded
         val privKeyStr = String(Base64.encode(privKeyBytes, Base64.NO_WRAP))
 
+        var allowBio = 0
+        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==28){
+            allowBio = BIOMETRIC_WEAK or DEVICE_CREDENTIAL
+        }else{
+            allowBio = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+        }
+
         BiometricEncryptedSharedPreferences.create(
             this,
             Constants.FileName,
             1,
             BiometricPrompt.PromptInfo.Builder().setTitle(getString(R.string.app_name))
                 .setAllowedAuthenticators(
-                    BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                    allowBio
                 ).build()
         ).observe(this, Observer { it: SharedPreferences? ->
             if (it != null) {

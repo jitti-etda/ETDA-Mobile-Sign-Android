@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.util.Base64
 import android.view.ViewGroup
 import android.view.Window
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
@@ -93,13 +94,20 @@ class RestoreImportKeyPasswordFragment : BaseFragment<RestoreImportKeyPasswordFr
         val privKeyBytes: ByteArray? = extrackP12.privateKey?.encoded
         val privKeyStr = String(Base64.encode(privKeyBytes, 2))
 
+        var allowBio = 0
+        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==28){
+            allowBio = BiometricManager.Authenticators.BIOMETRIC_WEAK or DEVICE_CREDENTIAL
+        }else{
+            allowBio = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+        }
+
         BiometricEncryptedSharedPreferences.create(
             this,
             Constants.FileName,
             1,
             BiometricPrompt.PromptInfo.Builder().setTitle(getString(R.string.app_name))
                 .setAllowedAuthenticators(
-                    BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                    allowBio
                 ).build()
         ).observe(this, Observer { it: SharedPreferences? ->
             if (it != null) {

@@ -17,7 +17,7 @@ class RestoreKeyPasswordViewModel : ViewModel() {
             var bArray: ByteArray;
             val cryptLib = CryptLib()
             try {
-                var aaa = cryptLib.decryptCipherText(data, password)
+                var aaa = cryptLib.decryptCipherTextWithRandomIV(data, password)
                 bArray = Base64.decode(aaa, Base64.DEFAULT)
             } catch (e: Exception) {
                 return null

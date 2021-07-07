@@ -1,16 +1,25 @@
 package th.or.etda.teda.mobile.ui.importkey
 
+import android.app.Dialog
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
+import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.ImportKeyFragmentBinding
 import th.or.etda.teda.mobile.ui.cert.CertAdapter
 import th.or.etda.teda.mobile.ui.cert.CertListViewModel
+import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
 
 
@@ -99,10 +108,61 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                         }
 
                         override fun onLongItemClick(view: View, position: Int) {
+                            alertDelete(adapterCert.currentList[position])
+
+
                         }
                     })
             )
         }
+
+    }
+
+    fun alertDelete(certificate: Certificate){
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_delete)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+            deleteCert(certificate)
+
+
+        }
+        val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
+        noBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    fun deleteCert(certificate: Certificate) {
+//        lifecycleScope.launch {
+//            viewModel.deleteCertificate(certificate)
+//        }
+
+        lifecycleScope.launch {
+            viewModel.deleteCertificate(certificate)
+//            adapterCert.notifyItemRemoved(position)
+//            adapterCert.notifyDataSetChanged()
+        }
+
+//        viewModel.isDelete.observe(this, Observer {
+////            getCertAll()
+//            adapterCert.currentList.remove(certificate)
+//            adapterCert.notifyItemRemoved(position)
+//        })
 
     }
 

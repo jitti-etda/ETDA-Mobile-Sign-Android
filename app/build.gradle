@@ -15,8 +15,8 @@ android {
         applicationId "th.or.etda.teda.mobile"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 28
-        versionName "1.0.28"
+        versionCode 30
+        versionName "1.0.30"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import android.widget.Toast
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
@@ -350,6 +351,13 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
             }
         }
 
+        var allowBio = 0
+        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==29){
+            allowBio = BiometricManager.Authenticators.BIOMETRIC_WEAK or DEVICE_CREDENTIAL
+        }else{
+            allowBio = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+        }
+
         if (!isCache) {
             BiometricEncryptedSharedPreferences.create(
                 this,
@@ -358,7 +366,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
                 BiometricPrompt.PromptInfo.Builder()
                     .setTitle(getString(R.string.app_name))
                     .setAllowedAuthenticators(
-                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+                        allowBio
                     ).build()
             ).observe(this, Observer { it: SharedPreferences? ->
 

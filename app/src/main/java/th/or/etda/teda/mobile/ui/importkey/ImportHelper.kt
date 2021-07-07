@@ -176,7 +176,7 @@ class ImportHelper {
                 val s: String = Base64.getEncoder().encodeToString(sss)
 
                 val cryptLib = CryptLib()
-                var res = cryptLib.encryptPlainText(s, password)
+                var res = cryptLib.encryptPlainTextWithRandomIV(s, password)
 
                 writeToFile(res, fileStoreEncrypt)
 
