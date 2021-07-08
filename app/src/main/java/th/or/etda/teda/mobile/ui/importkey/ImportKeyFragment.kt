@@ -19,6 +19,7 @@ import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.ImportKeyFragmentBinding
 import th.or.etda.teda.mobile.ui.cert.CertAdapter
 import th.or.etda.teda.mobile.ui.cert.CertListViewModel
+import th.or.etda.teda.mobile.ui.cert.KeyCertAdapter
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
 
@@ -30,7 +31,8 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
     val viewModel: CertListViewModel by viewModel()
 
-    private lateinit var adapterCert: CertAdapter
+//    private lateinit var adapterCert: CertAdapter
+    private lateinit var adapterCert: KeyCertAdapter
 
     override fun onInitDataBinding() {
 
@@ -53,7 +55,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
         }
 
-        adapterCert = CertAdapter()
+        adapterCert = KeyCertAdapter()
 
 
 
@@ -108,7 +110,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                         }
 
                         override fun onLongItemClick(view: View, position: Int) {
-                            alertDelete(adapterCert.currentList[position])
+                            alertDelete(adapterCert.getItem(position),position)
 
 
                         }
@@ -118,7 +120,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
     }
 
-    fun alertDelete(certificate: Certificate){
+    fun alertDelete(certificate: Certificate,position: Int){
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_delete)
@@ -135,7 +137,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
         yesBtn.setOnClickListener {
             dialog.dismiss()
-            deleteCert(certificate)
+            deleteCert(certificate,position)
 
 
         }
@@ -147,15 +149,21 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         dialog.show()
     }
 
-    fun deleteCert(certificate: Certificate) {
+    fun deleteCert(certificate: Certificate,position:Int) {
 //        lifecycleScope.launch {
 //            viewModel.deleteCertificate(certificate)
 //        }
 
         lifecycleScope.launch {
             viewModel.deleteCertificate(certificate)
-//            adapterCert.notifyItemRemoved(position)
-//            adapterCert.notifyDataSetChanged()
+            adapterCert.removeItem(certificate)
+            if (adapterCert.itemCount>0) {
+                viewBinding.layoutFirst.visibility = View.GONE
+                viewBinding.layoutMenu.visibility = View.VISIBLE
+            } else {
+                viewBinding.layoutFirst.visibility = View.VISIBLE
+                viewBinding.layoutMenu.visibility = View.GONE
+            }
         }
 
 //        viewModel.isDelete.observe(this, Observer {
@@ -181,20 +189,20 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
     fun getCertAll() {
         try {
-            adapterCert.currentList.clear()
+            adapterCert.clear()
         } catch (e: Exception) {
 
         }
 
         viewModel.getCertificateAll().observe(viewLifecycleOwner, Observer {
 
-            adapterCert.submitList(it)
-            if (adapterCert.currentList.isEmpty()) {
-                viewBinding.layoutFirst.visibility = View.VISIBLE
-                viewBinding.layoutMenu.visibility = View.GONE
-            } else {
+            adapterCert.addAll(it as ArrayList<Certificate>)
+            if (adapterCert.itemCount>0) {
                 viewBinding.layoutFirst.visibility = View.GONE
                 viewBinding.layoutMenu.visibility = View.VISIBLE
+            } else {
+                viewBinding.layoutFirst.visibility = View.VISIBLE
+                viewBinding.layoutMenu.visibility = View.GONE
             }
 
 

@@ -12,8 +12,8 @@ class CertListViewModel(var repository: CertificateRepository) : ViewModel() {
 
 
     private var certList = ArrayList<Certificate>()
-    var certLiveData = MutableLiveData<List<Certificate>>()
-    fun getCertificateAll(): MutableLiveData<List<Certificate>> {
+    var certLiveData = SingleLiveEvent<List<Certificate>>()
+    fun getCertificateAll(): SingleLiveEvent<List<Certificate>> {
 
         viewModelScope.launch {
             certList = repository.getCertAll() as ArrayList<Certificate>
@@ -29,7 +29,7 @@ class CertListViewModel(var repository: CertificateRepository) : ViewModel() {
 //            isDelete.value = repository.deleteCert(certificate)
             repository.deleteCert(certificate)
             certList.remove(certificate)
-            certLiveData.value = certList
+//            certLiveData.value = certList
         }
     }
 
