@@ -1,15 +1,19 @@
 package th.or.etda.teda.mobile.ui.sign
 
 import android.Manifest
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +74,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 
     var qrcodeResult = ""
     var certName: Certificate? = null
-
+    val CAMERA_PERMISSION = 2222
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,12 +166,13 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse) { /* ... */
-                        Toast.makeText(
-                            requireContext(),
-                            "Please allow permission",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        findNavController().navigateUp()
+//                        Toast.makeText(
+//                            requireContext(),
+//                            "Please allow permission",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        findNavController().navigateUp()
+                        dialogCameraPermission()
                     }
 
                     override fun onPermissionRationaleShouldBeShown(
@@ -352,9 +357,9 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         }
 
         var allowBio = 0
-        if(android.os.Build.VERSION.SDK_INT==28||android.os.Build.VERSION.SDK_INT==29){
+        if (android.os.Build.VERSION.SDK_INT == 28 || android.os.Build.VERSION.SDK_INT == 29) {
             allowBio = BiometricManager.Authenticators.BIOMETRIC_WEAK or DEVICE_CREDENTIAL
-        }else{
+        } else {
             allowBio = BIOMETRIC_STRONG or DEVICE_CREDENTIAL
         }
 
@@ -428,4 +433,52 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
 
         dialog.show()
     }
+
+    fun dialogCameraPermission() {
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_alert)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+        val tv_title = dialog.findViewById(R.id.tv_title) as TextView
+        tv_title.setText("We need to access your camera for scanning QR code.")
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+//        val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
+        yesBtn.setText("Dismiss  to  Go to setting")
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+            var intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            var uri = Uri.fromParts("package", requireCompatActivity().getPackageName(), null)
+            intent.setData(uri);
+            startActivityForResult(intent, CAMERA_PERMISSION);
+        }
+//        noBtn.setOnClickListener {
+//            dialog.dismiss()
+//            val action = SignFragmentDirections.nextActionToFirst()
+//            findNavController().navigate(action)
+//        }
+
+        dialog.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CAMERA_PERMISSION) {
+            if(resultCode == RESULT_OK){
+                setUpCamera()
+            }else{
+                findNavController().navigateUp()
+            }
+
+        }
+    }
+
+
 }

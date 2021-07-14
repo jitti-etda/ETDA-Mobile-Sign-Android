@@ -94,6 +94,7 @@
                     android:layout_height="wrap_content"
                     android:padding="20dp"
                     android:text="ปิดแจ้งเตือน"
+                    android:visibility="gone"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/text_small"
                     app:backgroundTint="@color/white"

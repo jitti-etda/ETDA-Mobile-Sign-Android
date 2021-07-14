@@ -38,11 +38,14 @@
             android:value="https://9228461c0c3f4283a8878e4507bf0290@o738973.ingest.sentry.io/5785534" />
 
 
-        <activity android:name=".extract.DeepLinkActivity">
+        <activity
+            android:name=".extract.DeepLinkActivity"
+            android:screenOrientation="portrait">
 
         </activity>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tedamobile.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -58,6 +61,7 @@
 
         <activity
             android:name=".ui.splash.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Tedamobile.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
