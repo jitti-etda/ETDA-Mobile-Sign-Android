@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
+import android.text.InputFilter
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -68,6 +69,16 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
     var filePathBackup: File? = null
     var nameTimestamp = ""
 
+
+//    private val blockCharacterSet = "~#^|$%&*!@"
+//
+//    private val filter =
+//        InputFilter { source, start, end, dest, dstart, dend ->
+//            if (source != null && blockCharacterSet.contains("" + source)) {
+//                ""
+//            } else null
+//        }
+
     override fun onInitDependencyInjection() {
 
     }
@@ -81,12 +92,12 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
             ImportKeyPasswordFragmentArgs.fromBundle(it).isResult
         }
 
+
         filePath = arguments?.let {
             ImportKeyPasswordFragmentArgs.fromBundle(it).file
         }.toString()
 
-
-
+//        viewBinding.edtName.filters = arrayOf(filter)
 
         Dexter.withContext(requireContext())
             .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -126,7 +137,10 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
             var file = File(filePath)
             passwordBackup?.let { backup(requireContext(), it, file) }
         }
-
+        setFragmentResultListener(BackupKeyPasswordFragment.REQUEST_KEY_BACK) { key, bundle ->
+            // read from the bundle
+            authenGoogleDrive()
+        }
 
         ImportHelper.fileLiveData.observe(viewLifecycleOwner, Observer {
             filePathBackup = it
@@ -314,6 +328,11 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
         when (requestCode) {
             REQUEST_CODE_SIGN_IN -> if (resultCode == Activity.RESULT_OK && data != null) {
                 handleSignInResult(data)
+            }else{
+                val action =
+                    ImportKeyPasswordFragmentDirections.actionToFirst()
+                findNavController().navigate(action)
+//                findNavController().navigateUp()
             }
         }
     }

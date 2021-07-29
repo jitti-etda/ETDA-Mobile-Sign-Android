@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
@@ -22,8 +23,8 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
 
     companion object {
         const val REQUEST_KEY = "BackupKeyPasswordFragment_Password"
+        const val REQUEST_KEY_BACK = "BackupKeyPasswordFragment_Back"
     }
-
 
 
     override fun onInitDataBinding() {
@@ -74,6 +75,18 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
             val ac = activity as MainActivity
             ac.onBackPressed()
         }
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    setFragmentResult(
+                        REQUEST_KEY_BACK,
+                        bundleOf("back" to true)
+                    )
+                    findNavController().navigateUp()
+                }
+            }
+            )
     }
 
     private fun alertInput() {
@@ -121,4 +134,6 @@ class BackupKeyPasswordFragment : BaseFragment<BackupKeyPasswordFragmentBinding>
 
         dialog.show()
     }
+
+
 }
