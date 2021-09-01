@@ -110,7 +110,7 @@ public class DriveServiceHelper {
 
         mDriveService = driveService;
     }
-    private static final String[] SCOPES = {DriveScopes.DRIVE_FILE,DriveScopes.DRIVE,DriveScopes.DRIVE_APPDATA,DriveScopes.DRIVE_METADATA};
+    private static final String[] SCOPES = {DriveScopes.DRIVE_FILE,DriveScopes.DRIVE_APPDATA};
     public static Drive getGoogleDriveService(Context context, GoogleSignInAccount account, String appName) {
         GoogleAccountCredential credential =
                 GoogleAccountCredential.usingOAuth2(

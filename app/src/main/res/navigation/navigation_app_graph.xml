@@ -11,7 +11,9 @@
         android:label="Sign Signature"
         tools:layout="@layout/sign_fragment">
 
-
+        <argument
+            android:name="qrcode"
+            app:argType="string" />
 
         <action
             android:id="@+id/next_cert_list"
@@ -113,6 +115,8 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+
+
 
     </fragment>
 

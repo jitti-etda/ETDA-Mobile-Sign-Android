@@ -129,9 +129,9 @@ class RestoreKeyFragment : BaseFragment<RestoreKeyFragmentBinding>(
             .requestEmail()
             .requestScopes(
                 Scope(DriveScopes.DRIVE_FILE),
-                Scope(DriveScopes.DRIVE),
+//                Scope(DriveScopes.DRIVE),
                 Scope(DriveScopes.DRIVE_APPDATA),
-                Scope(DriveScopes.DRIVE_METADATA)
+//                Scope(DriveScopes.DRIVE_METADATA)
             )
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(requireCompatActivity(), gso)

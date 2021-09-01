@@ -2,6 +2,7 @@ package th.or.etda.teda.mobile.ui.importkey
 
 import android.app.Dialog
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +18,6 @@ import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
 import th.or.etda.teda.mobile.data.Certificate
 import th.or.etda.teda.mobile.databinding.ImportKeyFragmentBinding
-import th.or.etda.teda.mobile.ui.cert.CertAdapter
 import th.or.etda.teda.mobile.ui.cert.CertListViewModel
 import th.or.etda.teda.mobile.ui.cert.KeyCertAdapter
 import th.or.etda.teda.mobile.util.UtilApps
@@ -31,28 +31,36 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
     val viewModel: CertListViewModel by viewModel()
 
-//    private lateinit var adapterCert: CertAdapter
+    //    private lateinit var adapterCert: CertAdapter
     private lateinit var adapterCert: KeyCertAdapter
 
     override fun onInitDataBinding() {
 
         val data = requireActivity().intent.data
         if (data != null) {
-            requireActivity().contentResolver.openInputStream(data)?.let {
-                var fileDownload = ImportHelper.writeTempFile(
-                    requireContext(),
-                    it
-                )
+            if (data.scheme.equals("mobilesign")) {
+                checkP12List(data)
 
-                val action =
-                    ImportKeyFragmentDirections.nextActionImportPassword(fileDownload.path, false)
-                findNavController().navigate(action)
-                requireActivity().intent.replaceExtras(Bundle())
-                requireActivity().intent.action = ""
-                requireActivity().intent.data = null
-                requireActivity().intent.flags = 0
+            } else {
+                requireActivity().contentResolver.openInputStream(data)?.let {
+                    var fileDownload = ImportHelper.writeTempFile(
+                        requireContext(),
+                        it
+                    )
+
+                    val action =
+                        ImportKeyFragmentDirections.nextActionImportPassword(
+                            fileDownload.path,
+                            false
+                        )
+                    findNavController().navigate(action)
+                }
             }
 
+            requireActivity().intent.replaceExtras(Bundle())
+            requireActivity().intent.action = ""
+            requireActivity().intent.data = null
+            requireActivity().intent.flags = 0
         }
 
         adapterCert = KeyCertAdapter()
@@ -94,7 +102,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
             }
             btnSign.setOnClickListener {
                 val action =
-                    ImportKeyFragmentDirections.nextActionSign()
+                    ImportKeyFragmentDirections.nextActionSign("")
                 findNavController().navigate(action)
             }
 
@@ -110,7 +118,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                         }
 
                         override fun onLongItemClick(view: View, position: Int) {
-                            alertDelete(adapterCert.getItem(position),position)
+                            alertDelete(adapterCert.getItem(position), position)
 
 
                         }
@@ -120,7 +128,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
 
     }
 
-    fun alertDelete(certificate: Certificate,position: Int){
+    fun alertDelete(certificate: Certificate, position: Int) {
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_delete)
@@ -137,7 +145,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
         yesBtn.setOnClickListener {
             dialog.dismiss()
-            deleteCert(certificate,position)
+            deleteCert(certificate, position)
 
 
         }
@@ -149,7 +157,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         dialog.show()
     }
 
-    fun deleteCert(certificate: Certificate,position:Int) {
+    fun deleteCert(certificate: Certificate, position: Int) {
 //        lifecycleScope.launch {
 //            viewModel.deleteCertificate(certificate)
 //        }
@@ -157,7 +165,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         lifecycleScope.launch {
             viewModel.deleteCertificate(certificate)
             adapterCert.removeItem(certificate)
-            if (adapterCert.itemCount>0) {
+            if (adapterCert.itemCount > 0) {
                 viewBinding.layoutFirst.visibility = View.GONE
                 viewBinding.layoutMenu.visibility = View.VISIBLE
             } else {
@@ -197,7 +205,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         viewModel.getCertificateAll().observe(viewLifecycleOwner, Observer {
 
             adapterCert.addAll(it as ArrayList<Certificate>)
-            if (adapterCert.itemCount>0) {
+            if (adapterCert.itemCount > 0) {
                 viewBinding.layoutFirst.visibility = View.GONE
                 viewBinding.layoutMenu.visibility = View.VISIBLE
             } else {
@@ -206,6 +214,27 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
             }
 
 
+        })
+    }
+
+    var isLoad = false
+    fun checkP12List(data: Uri) {
+        viewModel.getCertificateAll().observe(viewLifecycleOwner, Observer {
+
+            if (it.isNotEmpty()) {
+                if (!isLoad) {
+                    isLoad = true
+                    var encode = data.toString().split("qrcode/")[1]
+                    val action =
+                        ImportKeyFragmentDirections.nextActionSign(encode)
+                    findNavController().navigate(action)
+                }
+
+            } else {
+                isLoad = false
+                viewBinding.layoutFirst.visibility = View.VISIBLE
+                viewBinding.layoutMenu.visibility = View.GONE
+            }
         })
     }
 

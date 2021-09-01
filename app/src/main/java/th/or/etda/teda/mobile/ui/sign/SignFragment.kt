@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.util.AttributeSet
+import android.util.Base64
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -54,6 +55,7 @@ import th.or.etda.teda.mobile.util.Constants
 import th.or.etda.teda.mobile.util.SigningSingUtil
 import th.or.etda.teda.mobile.util.UtilApps
 import th.or.etda.teda.ui.base.BaseFragment
+import java.nio.charset.StandardCharsets
 
 
 class SignFragment : BaseFragment<SignFragmentBinding>(
@@ -75,6 +77,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     var qrcodeResult = ""
     var certName: Certificate? = null
     val CAMERA_PERMISSION = 2222
+    var isDeeplink = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,6 +112,14 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     override fun onInitDataBinding() {
         initActionBar()
         viewBinding.viewModel = viewModel
+
+        val qrcode = arguments?.let {
+            SignFragmentArgs.fromBundle(it).qrcode
+        }
+        if (qrcode != null && qrcode.isNotEmpty() && !isDeeplink) {
+            decodeDeeplink(qrcode)
+            isDeeplink = true
+        }
 
         viewBinding.apply {
             qrReader.setOnClickListener {
@@ -223,50 +234,53 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         stopScanner()
         val result = rawResult?.text
         result?.let {
-            qrcodeResult = result.trim()
+            checkQrcode(it)
+        }
+    }
 
-            try {
-                var data = qrcodeResult.split(";")
+    fun checkQrcode(result: String) {
+        qrcodeResult = result.trim()
 
-                var message = "หมายเลข Reference : " + data[SigningSingUtil.REF_NUMBER.ordinal]
+        try {
+            var data = qrcodeResult.split(";")
 
-                val dialog = Dialog(requireCompatActivity())
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setContentView(R.layout.dialog_qrcode_info)
-                dialog.getWindow()
-                    ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
-                dialog.getWindow()?.setLayout(
-                    ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                );
+            var message = "หมายเลข Reference : " + data[SigningSingUtil.REF_NUMBER.ordinal]
 
-                dialog.setCancelable(false)
+            val dialog = Dialog(requireCompatActivity())
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.setContentView(R.layout.dialog_qrcode_info)
+            dialog.getWindow()
+                ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+            dialog.getWindow()?.setLayout(
+                ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            );
 
-                val tvTitle = dialog.findViewById(R.id.tv_title) as TextView
-                tvTitle.setText(message)
-                val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
-                val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
-                yesBtn.setOnClickListener {
-                    dialog.dismiss()
-                    waitForSelectCert()
-                }
-                noBtn.setOnClickListener {
-                    dialog.dismiss()
-                    resumeScanner()
-                }
+            dialog.setCancelable(false)
 
-                dialog.show()
-            } catch (e: Exception) {
-                AlertDialog.Builder(requireContext())
-                    .setMessage("QrCode Invalid")
-                    .setCancelable(false)
-                    .setPositiveButton(
-                        "Close"
-                    ) { dialog, which ->
-                        resumeScanner()
-                    }.show()
+            val tvTitle = dialog.findViewById(R.id.tv_title) as TextView
+            tvTitle.setText(message)
+            val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+            val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
+            yesBtn.setOnClickListener {
+                dialog.dismiss()
+                waitForSelectCert()
+            }
+            noBtn.setOnClickListener {
+                dialog.dismiss()
+                resumeScanner()
             }
 
+            dialog.show()
+        } catch (e: Exception) {
+            AlertDialog.Builder(requireContext())
+                .setMessage("QrCode Invalid")
+                .setCancelable(false)
+                .setPositiveButton(
+                    "Close"
+                ) { dialog, which ->
+                    resumeScanner()
+                }.show()
         }
     }
 
@@ -451,7 +465,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         tv_title.setText("We need to access your camera for scanning QR code.")
         val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
 //        val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
-        yesBtn.setText("Dismiss  to  Go to setting")
+        yesBtn.setText("Go to setting")
         yesBtn.setOnClickListener {
             dialog.dismiss()
             var intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -471,13 +485,20 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA_PERMISSION) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 setUpCamera()
-            }else{
+            } else {
                 findNavController().navigateUp()
             }
 
         }
+    }
+
+
+    fun decodeDeeplink(encode: String) {
+        var byte = Base64.decode(encode, Base64.NO_WRAP)
+        val signString = String(byte, StandardCharsets.UTF_8)
+        checkQrcode(signString)
     }
 
 
