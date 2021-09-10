@@ -42,19 +42,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                 checkP12List(data)
 
             } else {
-                requireActivity().contentResolver.openInputStream(data)?.let {
-                    var fileDownload = ImportHelper.writeTempFile(
-                        requireContext(),
-                        it
-                    )
-
-                    val action =
-                        ImportKeyFragmentDirections.nextActionImportPassword(
-                            fileDownload.path,
-                            false
-                        )
-                    findNavController().navigate(action)
-                }
+                alertImport(data)
             }
 
             requireActivity().intent.replaceExtras(Bundle())
@@ -236,6 +224,47 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
                 viewBinding.layoutMenu.visibility = View.GONE
             }
         })
+    }
+
+    fun alertImport(data: Uri) {
+        val dialog = Dialog(requireCompatActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_import)
+        dialog.getWindow()
+            ?.setBackgroundDrawable(ColorDrawable(getResources().getColor(R.color.transparent)));
+        dialog.getWindow()?.setLayout(
+            ((UtilApps.getScreenWidth(getActivity()) * .9).toInt()),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        dialog.setCancelable(false)
+
+
+        val yesBtn = dialog.findViewById(R.id.btn_positive) as MaterialButton
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+
+            requireActivity().contentResolver.openInputStream(data)?.let {
+                var fileDownload = ImportHelper.writeTempFile(
+                    requireContext(),
+                    it
+                )
+
+                val action =
+                    ImportKeyFragmentDirections.nextActionImportPassword(
+                        fileDownload.path,
+                        false
+                    )
+                findNavController().navigate(action)
+            }
+
+        }
+        val noBtn = dialog.findViewById(R.id.btn_negative) as MaterialButton
+        noBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
 }
