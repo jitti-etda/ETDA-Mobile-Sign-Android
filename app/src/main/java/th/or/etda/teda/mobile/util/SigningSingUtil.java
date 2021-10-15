@@ -4,5 +4,7 @@ public enum SigningSingUtil {
     URL,
     REQUEST_ID,
     TOKEN,
-    REF_NUMBER
+    REF_NUMBER,
+    EXTENSION,
+    END_POINT
 }

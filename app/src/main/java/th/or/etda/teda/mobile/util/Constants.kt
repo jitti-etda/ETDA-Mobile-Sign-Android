@@ -10,5 +10,6 @@ class Constants {
         val FolderBackup = "backup"
         const val FileName = "teda_secret_shared_prefs"
         var listDataCache = ArrayList<SignCache>()
+        const val ALIAS = "TEDA_KEY"
     }
 }

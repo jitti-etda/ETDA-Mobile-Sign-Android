@@ -16,6 +16,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.util.AttributeSet
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -25,7 +26,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
-import androidx.camera.core.*
+import androidx.camera.core.CameraSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Observer
@@ -241,6 +242,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
     fun checkQrcode(result: String) {
         qrcodeResult = result.trim()
 
+
         try {
             var data = qrcodeResult.split(";")
 
@@ -344,7 +346,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
             viewModel.signedInfoSubmit.observe(viewLifecycleOwner, { signedInfo ->
                 signedInfo?.let {
                     viewBinding.progressBar.visibility = View.GONE
-                    dialogSignSuccess()
+                    dialogSignSuccess(url)
                 }
             })
         }
@@ -417,7 +419,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         }
     }
 
-    fun dialogSignSuccess() {
+    fun dialogSignSuccess(url:String) {
         val dialog = Dialog(requireCompatActivity())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_sign_info_success)
@@ -438,6 +440,7 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
             dialog.dismiss()
             val action = SignFragmentDirections.nextActionToFirst()
             findNavController().navigate(action)
+//            openWeb(url)
         }
         noBtn.setOnClickListener {
             dialog.dismiss()
@@ -501,5 +504,12 @@ class SignFragment : BaseFragment<SignFragmentBinding>(
         checkQrcode(signString)
     }
 
+    fun openWeb(urls: String) {
+        val data = urls.split(";")
+        val url =
+            data[SigningSingUtil.END_POINT.ordinal] + "?request_id=" + data[SigningSingUtil.REQUEST_ID.ordinal] + "&type="+data[SigningSingUtil.EXTENSION.ordinal]
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
 
 }

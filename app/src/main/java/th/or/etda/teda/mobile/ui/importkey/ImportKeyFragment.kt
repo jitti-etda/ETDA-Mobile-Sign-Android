@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
+import th.or.etda.teda.mobile.MainActivity
 import th.or.etda.teda.mobile.R
 import th.or.etda.teda.mobile.common.BiometricEncryptedSharedPreferences
 import th.or.etda.teda.mobile.common.RecyclerItemClickListener
@@ -35,21 +36,27 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
     private lateinit var adapterCert: KeyCertAdapter
 
     override fun onInitDataBinding() {
-
-        val data = requireActivity().intent.data
-        if (data != null) {
+        val data = (activity as MainActivity).deeplink()
+        if ( data != null) {
+//            val data = Uri.parse(dataString)
             if (data.scheme.equals("mobilesign")) {
                 checkP12List(data)
-
             } else {
                 alertImport(data)
             }
-
-            requireActivity().intent.replaceExtras(Bundle())
-            requireActivity().intent.action = ""
-            requireActivity().intent.data = null
-            requireActivity().intent.flags = 0
+            (activity as MainActivity).myUri = null
         }
+
+//        val data = requireActivity().intent.data
+//        if (data != null) {
+//            if (data.scheme.equals("mobilesign")) {
+//                checkP12List(data)
+//            } else {
+//                alertImport(data)
+//            }
+//            isDeeplinkOpen = true
+//
+//        }
 
         adapterCert = KeyCertAdapter()
 
@@ -115,6 +122,7 @@ class ImportKeyFragment : BaseFragment<ImportKeyFragmentBinding>(
         }
 
     }
+
 
     fun alertDelete(certificate: Certificate, position: Int) {
         val dialog = Dialog(requireCompatActivity())

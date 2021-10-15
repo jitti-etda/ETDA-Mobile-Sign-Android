@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import android.widget.Toast
 import androidx.biometric.BiometricManager.Authenticators.*
 import androidx.biometric.BiometricPrompt
 import androidx.core.os.bundleOf
@@ -120,7 +121,8 @@ class ImportKeyPasswordFragment : BaseFragment<ImportKeyPasswordFragmentBinding>
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) { /* ... */
-
+                    Toast.makeText(requireContext(),"Please allow permission", Toast.LENGTH_SHORT).show()
+                    findNavController().navigateUp()
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
