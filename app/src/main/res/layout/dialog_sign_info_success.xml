@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="3dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/checkmark_circle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="คุณได้ลงนามเอกสาร"
+                android:layout_marginTop="10dp"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_xlarge"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="เรียบร้อย"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_normal_small" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="วันที่"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/text_small" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="วันที่"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_small"
+                android:textStyle="bold" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_positive"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:text="รับทราบ"
+                    android:textSize="@dimen/text_small"
+                    app:cornerRadius="30dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_negative"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    android:text="ปิดแจ้งเตือน"
+                    android:visibility="gone"
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/text_small"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="30dp"
+                    app:strokeColor="@color/blue"
+                    app:strokeWidth="1dp" />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

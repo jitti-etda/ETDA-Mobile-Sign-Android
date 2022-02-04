@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_app_graph"
+    app:startDestination="@id/nav_import">
+
+    <fragment
+        android:id="@+id/nav_sign"
+        android:name="th.or.etda.teda.mobile.ui.sign.SignFragment"
+        android:label="Sign Signature"
+        tools:layout="@layout/sign_fragment">
+
+        <argument
+            android:name="qrcode"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/next_cert_list"
+            app:destination="@id/cert_list_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+
+        <action
+            android:id="@+id/next_directory"
+            app:destination="@id/directory_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+
+
+        <action
+            android:id="@+id/next_action_to_first"
+            app:destination="@id/nav_import"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_import"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+
+
+
+
+    <fragment
+        android:id="@+id/cert_list_fragment"
+        android:name="th.or.etda.teda.mobile.ui.cert.CertListFragment"
+        tools:layout="@layout/cert_list_fragment">
+
+        <argument
+            android:name="isResult"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/directory_fragment"
+        android:name="th.or.etda.teda.mobile.ui.importkey.directory.DirectoryFragment"
+        tools:layout="@layout/directory_fragment">
+
+        <action
+            android:id="@+id/next_action_import_password"
+            app:destination="@id/import_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_import"
+        android:name="th.or.etda.teda.mobile.ui.importkey.ImportKeyFragment"
+        android:label="@string/menu_import"
+        tools:layout="@layout/import_key_fragment">
+
+
+        <action
+            android:id="@+id/next_action_import"
+            app:destination="@id/directory_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_restore"
+            app:destination="@id/nav_restore"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_sign"
+            app:destination="@id/nav_sign"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_import_password"
+            app:destination="@id/import_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_csr_list"
+            app:destination="@id/csr_list_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_csr_create"
+            app:destination="@id/csr_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/import_key_password"
+        android:name="th.or.etda.teda.mobile.ui.importkey.password.ImportKeyPasswordFragment"
+        tools:layout="@layout/import_key_password_fragment">
+
+        <argument
+            android:name="file"
+            app:argType="string" />
+
+        <argument
+            android:name="isResult"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <argument
+            android:name="isBackGoogle"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+        <action
+            android:id="@+id/action_to_first"
+            app:destination="@id/nav_import"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_import"
+            app:popUpToInclusive="true" />
+
+
+        <action
+            android:id="@+id/next_action_backup_password"
+            app:destination="@id/backup_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/nav_restore"
+        android:name="th.or.etda.teda.mobile.ui.restorekey.RestoreKeyFragment"
+        android:label="@string/menu_restore"
+        tools:layout="@layout/restore_key_fragment">
+
+        <action
+            android:id="@+id/next_action_import_password"
+            app:destination="@id/import_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_backup_password"
+            app:destination="@id/backup_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_restore_password"
+            app:destination="@id/restore_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/backup_key_password"
+        android:name="th.or.etda.teda.mobile.ui.backupkey.password.BackupKeyPasswordFragment"
+        tools:layout="@layout/backup_key_password_fragment">
+
+        <argument
+            android:name="isRestore"
+            android:defaultValue="false"
+            app:argType="boolean" />
+
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/restore_key_password"
+        android:name="th.or.etda.teda.mobile.ui.restorekey.password.RestoreKeyPasswordFragment"
+        tools:layout="@layout/restore_key_password_fragment">
+
+
+        <action
+            android:id="@+id/next_action_restore_import_password"
+            app:destination="@id/restore_import_key_password"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/restore_import_key_password"
+        android:name="th.or.etda.teda.mobile.ui.restorekey.import.RestoreImportKeyPasswordFragment"
+        tools:layout="@layout/restore_import_key_password_fragment">
+
+        <action
+            android:id="@+id/next_action_to_first"
+            app:destination="@id/nav_import"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_import"
+            app:popUpToInclusive="true" />
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/csr_list_fragment"
+        android:name="th.or.etda.teda.mobile.ui.csr.list.CsrListFragment"
+        tools:layout="@layout/csr_list_fragment">
+
+        <argument
+            android:name="file"
+            app:argType="string" />
+
+
+        <action
+            android:id="@+id/next_action_to_csr"
+            app:destination="@id/csr_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_to_web"
+            app:destination="@id/inet_web_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_cer"
+            app:destination="@id/directory_csr_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/next_action_chains"
+            app:destination="@id/directory_csr_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/csr_fragment"
+        android:name="th.or.etda.teda.mobile.ui.csr.CsrFragment"
+        tools:layout="@layout/csr_fragment">
+
+
+     <!--   <action
+            android:id="@+id/next_action_to_inet"
+            app:destination="@id/inet_web_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />-->
+
+        <action
+            android:id="@+id/next_action_to_inet"
+            app:destination="@id/inet_web_fragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_import"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/inet_web_fragment"
+        android:name="th.or.etda.teda.mobile.ui.csr.InetWebFragment"
+        tools:layout="@layout/inet_web_fragment">
+
+
+        <action
+            android:id="@+id/next_action_to_pick_file"
+            app:destination="@id/directory_csr_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/directory_csr_fragment"
+        android:name="th.or.etda.teda.mobile.ui.csr.directory.DirectoryCsrFragment"
+        tools:layout="@layout/directory_csr_fragment">
+
+        <argument
+            android:name="type"
+            app:argType="string" />
+
+
+    </fragment>
+
+</navigation>

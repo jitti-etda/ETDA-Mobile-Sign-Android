@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/action_bar"
+                layout="@layout/actionbar_custom" />
+
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/OutlinedRoundedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="@color/grey"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/blue"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:expandedHintEnabled="false"
+                        app:hintTextColor="@color/blue">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮไำะัี๊ฯเ้็่๋าแิื์ใุูึ"
+                            android:hint="Common Name"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_normal_small" />
+
+                        <!-- <com.google.android.material.textfield.TextInputEditText
+                             android:id="@+id/edt_name"
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content"
+                             android:hint="Name"
+                             android:textColor="@color/black"
+                             android:textSize="@dimen/text_normal_small" />-->
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/OutlinedRoundedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="@color/grey"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/blue"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:expandedHintEnabled="false"
+                        app:hintTextColor="@color/blue">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_or"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮไำะัี๊ฯเ้็่๋าแิื์ใุูึ"
+                            android:hint="Organization"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_normal_small" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/OutlinedRoundedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="@color/grey"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/blue"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:expandedHintEnabled="false"
+                        app:hintTextColor="@color/blue">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_unit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮไำะัี๊ฯเ้็่๋าแิื์ใุูึ"
+                            android:hint="Organizational Unit"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_normal_small" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/OutlinedRoundedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="@color/grey"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/blue"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:expandedHintEnabled="false"
+                        app:hintTextColor="@color/blue">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_state"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮไำะัี๊ฯเ้็่๋าแิื์ใุูึ"
+                            android:hint="State/province"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_normal_small" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/OutlinedRoundedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="@color/grey"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/blue"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:expandedHintEnabled="false"
+                        app:hintTextColor="@color/blue">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_city"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890_กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮไำะัี๊ฯเ้็่๋าแิื์ใุูึ"
+                            android:hint="City/locality"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_normal_small" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/OutlinedRoundedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColorHint="@color/grey"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/blue"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:expandedHintEnabled="false"
+                        app:hintTextColor="@color/blue">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_country"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                            android:hint="Country Code"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_normal_small" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/OutlinedRoundedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:visibility="gone"
+                        android:textColorHint="@color/grey"
+                        app:boxCornerRadiusBottomEnd="20dp"
+                        app:boxCornerRadiusBottomStart="20dp"
+                        app:boxCornerRadiusTopEnd="20dp"
+                        app:boxCornerRadiusTopStart="20dp"
+                        app:boxStrokeColor="@color/blue"
+                        app:errorTextAppearance="@style/error_appearance"
+                        app:expandedHintEnabled="false"
+                        app:hintTextColor="@color/blue">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Email"
+                            android:inputType="textEmailAddress"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_normal_small" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+                    <!--  <EditText
+                          android:id="@+id/password_text"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="center"
+                          android:hint="Password"
+                          android:inputType="textPassword"
+                          android:textSize="35sp"
+                          app:layout_constraintTop_toTopOf="parent" />
+
+                      <EditText
+                          android:id="@+id/name_cert"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="10dp"
+                          android:gravity="center"
+                          android:hint="Name"
+                          android:textSize="35sp"
+                          app:layout_constraintTop_toTopOf="parent" />-->
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_gen_csr"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:padding="20dp"
+                        android:text="ดำเนินการต่อ"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_small"
+                        app:cornerRadius="30sp" />
+
+
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+
+    </FrameLayout>
+</layout>
