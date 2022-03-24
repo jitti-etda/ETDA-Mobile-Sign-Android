@@ -41,7 +41,7 @@ val retrofitModule = module {
 
     fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api-uat.teda.th")
+            .baseUrl("http://api-signing.teda.th/")
             .client(okHttpClient)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))

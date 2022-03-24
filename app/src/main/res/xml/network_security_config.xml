@@ -4,5 +4,6 @@
         <domain includeSubdomains="true">mobilekey-uat-signing.teda.th</domain>
         <domain includeSubdomains="true">mconnecttest-signing.teda.th</domain>
         <domain includeSubdomains="true">api-uat.teda.th</domain>
+        <domain includeSubdomains="true">api-signing.teda.th</domain>
     </domain-config>
 </network-security-config>
