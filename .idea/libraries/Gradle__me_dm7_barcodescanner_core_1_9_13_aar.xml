@@ -13,6 +13,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ee6c452313fbf0734fbb2ee9848fdd0/jetified-core-1.9.13/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ee6c452313fbf0734fbb2ee9848fdd0/jetified-core-1.9.13/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4ee6c452313fbf0734fbb2ee9848fdd0/jetified-core-1.9.13/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b26a8fff818205e84d3f36d182cf710e/jetified-core-1.9.13/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b26a8fff818205e84d3f36d182cf710e/jetified-core-1.9.13/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b26a8fff818205e84d3f36d182cf710e/jetified-core-1.9.13/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
